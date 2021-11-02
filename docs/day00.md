@@ -1,0 +1,122 @@
+# Game Off 2021 - Day 0
+
+https://itch.io/jam/game-off-2021
+
+Always wanted to create games, so what better way to start than to force myself via game jam?
+
+I'm an okay programmer, amateur artist, and know-nothing sound engineer.
+
+## Goals
+
+Successful projects need concrete goals. These are the goals for the jam. More goals TBD once I know what game I'm making.
+
+### Complete a game
+
+Perhaps unpolished, but something with an actual gameplay loop and assets. Full-cycle experience.
+
+This needs to be explicitly stated since "completion" will constrain decisions.
+- It's okay if it's janky or imperfect
+- Beware of feature creep or over-scoping the design
+- No "giving up" halfway through like my Nanowrimo or Inktober attempts
+- Needs programming, art, and sound
+
+### Devote at least 1 hour per day
+
+Mustering the willpower to discipline myself. This will be hard.
+
+Avoiding the school project crunch a week before the deadline.
+
+## Concerns
+
+### Time management
+
+No experience means I don't have any idea on how long anything takes. 1hr/day budget tells me nothing about how to scope.
+
+### Sound
+
+Music + effects usually play a large part in game experience. Bad music + effects is probably worse than nothing.
+
+I can find copyright-free sources if necessary, but I'd like to do everything myself.
+
+## Theme
+
+> BUG! 
+>
+> Your challenge, should you choose to accept it, is to create a game between now and December 1 incorporating the theme somehow. After a few weeks of playing and rating the games by participants, the winners will be announced shortly thereafter.
+>
+> As usual, you may interpret ‘BUG’ however you wish …
+>
+> BUG (/bəɡ/)
+> 
+> noun
+>
+>    an insect or creepy crawly
+>    an unexpected defect, fault, flaw, or imperfection in code or equipment
+>    a microorganism (such as a bacterium or virus) causing illness or disease
+>    a concealed listening device
+>    a sudden enthusiasm
+>    a river in Ukraine 
+>
+> verb
+>
+>    to bother or annoy or pester
+>    to plant a listening device
+>    to “bug off” or “bug out” 
+>
+> Or go rogue and ignore the dictionary:
+>
+>    B.U.G acronyms e.g. Being Unusually Good or Big Urban Game or something
+>    Dad jokes / puns like deterants / tick tock / spelling bee / flywheel 
+>
+> Note: Nobody’s judging the code quality, so lots of bugs are both expected and accepted. Focus on having fun 😉 
+
+
+### Brainstorming
+
+Anything; mechanics, aesthetics, narrative, etc.
+
+- Bug-girls. I'm a degenerate weeb.
+- Platformer like Cavestory with a bug AI companion (Curly Brace but with more interaction mechanics)
+  - Platformers are everybody's first game right?
+- Puzzle game based around actual bugs (off by one, integer overflow, etc.)
+  - Seems obvious? And hard to consider fun mechanics that isn't actually programming...
+- Strategy game with warring tribes of bugs
+- Something glitchy
+  - Gnosia "bugs" destroying the universe
+  - OOT/Mario64 speedruns. Wall clips, hovering, ISG, BLJ, etc.
+  - Static effects
+  - 4th wall breaks
+
+All together?
+
+A bug girl RPG with programming-bug battle mechanics and speedrunner-bug power ups. 
+You are a sentient logic bug trying to escape her game and the antagonist is the programmer adding new code to squash you.
+
+Why an RPG? For the aesthetic of bugs, without actual bugs.
+- Attempting to control non-buggy wall clips or infinite speed glitches seems ripe for actual bugs in movement-based games (like a platformer).
+- It seems simple to play with things like integer overflow or null pointer exceptions via scripted turn-based attacks (whether as a gimmick or actual mechanic like over-healing to kill)
+- Simple over world movement /w "bug" power-ups allows controlled puzzle-like interactions (instead of "cut" in pokemon you can "no clip" through a bush)
+
+I guess this is fine scope for the game jam?
+- Systems: overworld map, turn-based battle engine, cutscenes/text boxes
+- Art assets: grid-based terrain, simple backgrounds, walking character, as many battle characters as possible, interface
+- Sound assets: overworld music + battle music + dramatic cutscene music, hit sound effects, power-up effects
+- Can be scaled up or down in scope depending on progress. # of enemies, # of powerups, locales, story, etc.
+
+Good enough for me. We'll find out if I regret this in 30 days or less.
+
+## Progress
+
+- Thought a bit about the theme and wrote this update
+- Setup the Github project + pages
+  - Past experience is with Gitlab and Gitlab Pages, so need to learn a bit about Github + pages
+  - New to Jekyll for SSG, installed and tried the bare minimum. I messed it up and need to further configure
+
+## TODO
+
+- Figure out how to make Unity play nice with Git
+- Start doing things. Whims will decide whether I work on game design, programming, art, or sound on a given day
+
+## Time Spent
+
+0 + 2.5hr
