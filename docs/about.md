@@ -2,17 +2,13 @@
 title: About
 permalink: /about/
 categories: [site]
+layout: custom
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+The GitHub Pages site hosting the [Game Off 2021](https://itch.io/jam/game-off-2021) submission for YourWaifuIsALie.
 
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
+The GitHub Pages are made with Jekyll and the [Midnight](https://github.com/pages-themes/midnight) theme.
 
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
+Blog posts + code source found at the [GitHub Repo](https://github.com/YourWaifuIsALie/game-off-2021).
 
-
-[jekyll-organization]: https://github.com/jekyll
+CloudFlare web analytics is used to see visitor traffic.

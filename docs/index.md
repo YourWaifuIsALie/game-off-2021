@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: custom
 ---
 
 {% for category in site.category-list %}
@@ -22,4 +22,3 @@ layout: default
   {% endfor %}
 </ul>
 {% endfor %}
-

@@ -1,6 +1,7 @@
 ---
 title: Design Doc
 categories: [docs]
+layout: custom
 ---
 # Design Doc
 
