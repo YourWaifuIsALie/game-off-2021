@@ -42,6 +42,13 @@ Actions:
 
 Characters and targeted actions. Actions have effects which generally check stats + tags of characters involved.
 
+Battle "bugs" take the form of battle mechanics + special abilities/options available to the combat actors.
+- Over-healing past a certain number overflows back to negative and death
+- Health values can be byte-swapped between little and big endian, transforming health values
+- An ability to change what actor is being referenced by a targeting name (pointer)
+- Items can be targets and special items can cause different effects when targeted (like "drop enemy table")
+
+
 ## Aesthetics
 
 2d cutout animation in the vein of mobage like Princess Connect
