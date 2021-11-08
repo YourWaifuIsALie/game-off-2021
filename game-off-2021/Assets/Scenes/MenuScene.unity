@@ -493,8 +493,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e90b88bd817ad04408cdbba5940f3d3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentMenu: {fileID: 1590438216}
-  levelLoader: {fileID: 1128016955}
+  _currentMenu: {fileID: 1590438216}
+  _levelLoader: {fileID: 1128016955}
 --- !u!1 &700902737
 GameObject:
   m_ObjectHideFlags: 0
@@ -641,8 +641,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e90b88bd817ad04408cdbba5940f3d3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentMenu: {fileID: 1590438216}
-  levelLoader: {fileID: 0}
+  _currentMenu: {fileID: 1590438216}
+  _levelLoader: {fileID: 1128016955}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -743,6 +743,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4249030790086023223, guid: 0e8a07a830a7fc34aba526282f317a2f, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4450283645681071352, guid: 0e8a07a830a7fc34aba526282f317a2f, type: 3}
+      propertyPath: _currentMenu
+      value: 
+      objectReference: {fileID: 757019000}
+    - target: {fileID: 4450283645681071352, guid: 0e8a07a830a7fc34aba526282f317a2f, type: 3}
+      propertyPath: _levelLoader
+      value: 
+      objectReference: {fileID: 1128016955}
     - target: {fileID: 9130688114851833368, guid: 0e8a07a830a7fc34aba526282f317a2f, type: 3}
       propertyPath: m_Text
       value: Options
@@ -1191,8 +1203,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e90b88bd817ad04408cdbba5940f3d3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentMenu: {fileID: 1590438216}
-  levelLoader: {fileID: 0}
+  _currentMenu: {fileID: 1590438216}
+  _levelLoader: {fileID: 1128016955}
 --- !u!1001 &1128016954
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1361,6 +1373,14 @@ PrefabInstance:
       propertyPath: m_PresetInfoIsWorld
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4450283645681071352, guid: 0e8a07a830a7fc34aba526282f317a2f, type: 3}
+      propertyPath: _currentMenu
+      value: 
+      objectReference: {fileID: 1590438216}
+    - target: {fileID: 4450283645681071352, guid: 0e8a07a830a7fc34aba526282f317a2f, type: 3}
+      propertyPath: _levelLoader
+      value: 
+      objectReference: {fileID: 1128016955}
     - target: {fileID: 5984469233596997780, guid: 0e8a07a830a7fc34aba526282f317a2f, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -1487,6 +1507,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4450283645681071352, guid: 0e8a07a830a7fc34aba526282f317a2f, type: 3}
+      propertyPath: _currentMenu
+      value: 
+      objectReference: {fileID: 1446306948}
+    - target: {fileID: 4450283645681071352, guid: 0e8a07a830a7fc34aba526282f317a2f, type: 3}
+      propertyPath: _levelLoader
+      value: 
+      objectReference: {fileID: 1128016955}
     - target: {fileID: 9130688114851833368, guid: 0e8a07a830a7fc34aba526282f317a2f, type: 3}
       propertyPath: m_Text
       value: Credits
@@ -1741,8 +1769,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e90b88bd817ad04408cdbba5940f3d3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentMenu: {fileID: 1590438216}
-  levelLoader: {fileID: 0}
+  _currentMenu: {fileID: 1590438216}
+  _levelLoader: {fileID: 1128016955}
 --- !u!1 &2099586070
 GameObject:
   m_ObjectHideFlags: 0

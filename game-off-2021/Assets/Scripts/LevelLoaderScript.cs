@@ -6,13 +6,13 @@ using UnityEngine.SceneManagement;
 public class LevelLoaderScript : MonoBehaviour
 {
     [SerializeField]
-    private Animator sceneTransition;
+    private Animator _sceneTransition;
     [SerializeField]
-    private float transitionTime = 1f;
+    private float _transitionTime = 1f;
     public IEnumerator LoadLevel(string scene)
     {
-        sceneTransition.SetTrigger("Start");
-        yield return new WaitForSeconds(transitionTime);
+        _sceneTransition.SetTrigger("Start");
+        yield return new WaitForSeconds(_transitionTime);
         SceneManager.LoadScene(scene);
     }
 

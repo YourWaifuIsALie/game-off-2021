@@ -1,16 +1,13 @@
 using System;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-
 public class NavigateMenuScript : MonoBehaviour
 {
     [SerializeField]
-    private GameObject currentMenu;
+    private GameObject _currentMenu;
 
-    private GameObject previousMenu;
+    private GameObject _previousMenu;
     [SerializeField]
-    private GameObject levelLoader;
+    private GameObject _levelLoader;
 
 
     public void ChangeMenu(GameObject menu)
@@ -18,23 +15,23 @@ public class NavigateMenuScript : MonoBehaviour
         // Activating/deactivating canvases changes the priority on display
         // Ensure all canvases have the proper sort order
         menu.SetActive(true);
-        currentMenu.SetActive(false);
+        _currentMenu.SetActive(false);
         SetRelativeBack(menu);
 
     }
 
     public void ChangeScene(string scene)
     {
-        var script = (LevelLoaderScript)levelLoader.GetComponent(typeof(LevelLoaderScript));
+        var script = (LevelLoaderScript)_levelLoader.GetComponent(typeof(LevelLoaderScript));
         StartCoroutine(script.LoadLevel(scene));
     }
 
 
     public void PreviousMenu()
     {
-        if (previousMenu != null)
+        if (_previousMenu != null)
         {
-            ChangeMenu(previousMenu);
+            ChangeMenu(_previousMenu);
         }
     }
 
@@ -45,7 +42,7 @@ public class NavigateMenuScript : MonoBehaviour
 
     public void SetPreviousMenu(GameObject menu)
     {
-        previousMenu = menu;
+        _previousMenu = menu;
     }
     public void SetRelativeBack(GameObject menu)
     {
@@ -55,7 +52,7 @@ public class NavigateMenuScript : MonoBehaviour
             var relativeCanvas = menu.transform.Find("RelativeControlsCanvas").gameObject;
             var backButton = relativeCanvas.transform.Find("BackButton").gameObject;
             var script = (NavigateMenuScript)backButton.GetComponent(typeof(NavigateMenuScript));
-            script.SetPreviousMenu(currentMenu);
+            script.SetPreviousMenu(_currentMenu);
         }
         catch (Exception e)
         {

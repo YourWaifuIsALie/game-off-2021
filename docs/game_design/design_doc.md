@@ -47,6 +47,8 @@ Battle "bugs" take the form of battle mechanics + special abilities/options avai
 - Health values can be byte-swapped between little and big endian, transforming health values
 - An ability to change what actor is being referenced by a targeting name (pointer)
 - Items can be targets and special items can cause different effects when targeted (like "drop enemy table")
+- Unsanitized input: get a targetable menu option that can "drop enemy table"
+  - Being able to target variable things (like menu options, UI elements, backgrounds) has a bunch of possibilities
 
 
 ## Aesthetics
