@@ -505,8 +505,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e90b88bd817ad04408cdbba5940f3d3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _currentMenu: {fileID: 0}
-  _levelLoader: {fileID: 0}
+  _currentMenu: {fileID: 862083024}
+  _levelLoader: {fileID: 638011653}
 --- !u!114 &733022803
 MonoBehaviour:
   m_ObjectHideFlags: 0

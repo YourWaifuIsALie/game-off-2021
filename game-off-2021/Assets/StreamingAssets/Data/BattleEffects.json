@@ -1,0 +1,9 @@
+{
+    "name": "exampleEffect",
+    "displayName": "Example Effect",
+    "type": "attackDamageEffect",
+    "shortDescription": "Flavor text",
+    "longDescription": "An example effect.",
+    "effectValues": {},
+    "condition": {}
+}
