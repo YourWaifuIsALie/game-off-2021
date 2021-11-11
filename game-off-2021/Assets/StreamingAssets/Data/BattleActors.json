@@ -1,0 +1,17 @@
+[
+    {
+        "name": "testActor",
+        "displayName": "Test Actor",
+        "type": "BasicActor",
+        "shortDescription": "A dummy",
+        "longDescription": "A very generic test actor",
+        "maxHealth": 10,
+        "maxMana": 10,
+        "maxAttack": 1,
+        "maxDefense": 1,
+        "maxSpeed": 1,
+        "level": 0,
+        "tagStrings": ["dummy"],
+        "actionStrings": ["basicAttack"]
+    }
+]

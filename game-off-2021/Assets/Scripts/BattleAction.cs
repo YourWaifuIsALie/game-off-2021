@@ -1,27 +1,56 @@
 using System.Collections.Generic;
+using UnityEngine;
 
-public abstract class BattleAction
+public class BattleAction
 {
     public string name { get; set; }
+    public string displayName { get; set; }
+    public string type { get; set; }
     public string shortDescription { get; set; }
     public string longDescription { get; set; }
+    public List<string> effectStrings { get; set; }
+    public List<IBattleEffect> effects { get; set; }
 
-    public abstract void act(BattleActor origin, BattleActor[] targets);
-
+    public BattleAction()
+    {
+        effects = new List<IBattleEffect>();
+    }
 }
 
-public class ActionAttackBasic : BattleAction
+public class BattleActionFactory
 {
-    public List<AttackDamageEffect> effects { get; set; }
-    public ActionAttackBasic()
+    // TODO some fancy way to deserialize directly and safely
+    public static IBattleAction make(BattleAction action, Dictionary<string, IBattleEffect> allEffects)
     {
-        // TODO: Use EffectLoader and read from JSON types
-        effects = new List<AttackDamageEffect>();
-        effects.Add(new EffectBasicAttack());
-        effects.Add(new EffectPercentModifyDamage());
+        foreach (var effectString in action.effectStrings)
+            action.effects.Add(allEffects[effectString]);
+
+        switch (action.type)
+        {
+            case "ActionAttackBasic":
+                Debug.Log("Make ActionAttackBasic");
+                return new ActionAttackBasic(action);
+            default:
+                Debug.Log("Unexpected BattleAction type");
+                return null;
+        }
+    }
+}
+
+public interface IBattleAction
+{
+    void act(BattleActor origin, BattleActor[] targets);
+}
+public class ActionAttackBasic : IBattleAction
+{
+    public BattleAction stats { get; set; }
+
+    public ActionAttackBasic(BattleAction inStats)
+    {
+        stats = inStats;
     }
 
-    public override void act(BattleActor origin, BattleActor[] targets)
+    public void act(BattleActor origin, BattleActor[] targets)
     {
         if (targets.Length > 1)
         {
@@ -31,8 +60,9 @@ public class ActionAttackBasic : BattleAction
         {
             BattleActor target = targets[0];
             int damage = 0;
-            foreach (var effect in effects)
-                damage = effect.process(origin, target, damage);
+            foreach (var effect in stats.effects)
+                if (effect is IAttackDamageEffect)
+                    damage = ((IAttackDamageEffect)effect).process(origin, target, damage);
             if (damage > 0)
                 target.currentHealth = target.currentHealth - damage;
         }

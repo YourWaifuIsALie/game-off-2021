@@ -1,9 +1,33 @@
-{
-    "name": "exampleEffect",
-    "displayName": "Example Effect",
-    "type": "attackDamageEffect",
-    "shortDescription": "Flavor text",
-    "longDescription": "An example effect.",
-    "effectValues": {},
-    "condition": {}
-}
+[
+    {
+        "name": "basicAttack",
+        "displayName": "Attack",
+        "type": "EffectBasicAttack",
+        "shortDescription": "A basic attack",
+        "longDescription": "Uses the origin's base attack stat",
+        "effectValues": {},
+        "condition": {}
+    },
+    {
+        "name": "powerAttack",
+        "displayName": "Power Attack",
+        "type": "EffectBasicAttack",
+        "shortDescription": "A powerful attack",
+        "longDescription": "Uses the origin's base attack stat + 10",
+        "effectValues": {
+            "add": 10
+        },
+        "condition": {}
+    },
+    {
+        "name": "weakAttack",
+        "displayName": "Weak Attack",
+        "type": "EffectPercentModifyDamage",
+        "shortDescription": "A weak attack",
+        "longDescription": "Uses the origin's base attack * 0.5",
+        "effectValues": {
+            "mul": 0.5
+        },
+        "condition": {}
+    }
+]

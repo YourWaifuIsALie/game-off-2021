@@ -1,5 +1,9 @@
 using System;
+using System.IO;
+using System.Collections.Generic;
 using UnityEngine;
+
+using Newtonsoft.Json;
 public class NavigateMenuScript : MonoBehaviour
 {
     [SerializeField]
@@ -58,5 +62,10 @@ public class NavigateMenuScript : MonoBehaviour
         {
             Debug.LogError(e);
         }
+    }
+
+    public void Testfunction()
+    {
+        // Random function to test things as needed
     }
 }

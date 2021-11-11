@@ -1,0 +1,12 @@
+[
+    {
+        "name": "basicAttack",
+        "displayName": "Attack",
+        "type": "ActionAttackBasic",
+        "shortDescription": "A basic attack",
+        "longDescription": "Uses the origin's base attack stat",
+        "effectStrings": [
+            "basicAttack"
+        ]
+    }
+]
