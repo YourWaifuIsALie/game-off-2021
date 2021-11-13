@@ -25,14 +25,14 @@ public class BattleActor
     public bool isAlive { get; set; }
 
     public List<string> tagStrings { get; set; }
-    public List<BattleTag> tags { get; set; }
+    public Dictionary<string, BattleTag> tags { get; set; }
     public List<string> actionStrings { get; set; }
-    public List<IBattleAction> actions { get; set; }
+    public Dictionary<string, IBattleAction> actions { get; set; }
 
     public BattleActor()
     {
-        tags = new List<BattleTag>();
-        actions = new List<IBattleAction>();
+        tags = new Dictionary<string, BattleTag>();
+        actions = new Dictionary<string, IBattleAction>();
     }
 
     public void initializeActor()
@@ -53,15 +53,15 @@ public class BattleActorFactory
     public static IBattleActor make(BattleActor actor, Dictionary<string, IBattleAction> allActions, Dictionary<string, BattleTag> allTags)
     {
         foreach (var tagString in actor.tagStrings)
-            actor.tags.Add(allTags[tagString]);
+            actor.tags[tagString] = (allTags[tagString]);
 
         foreach (var actionString in actor.actionStrings)
-            actor.actions.Add(allActions[actionString]);
+            actor.actions[actionString] = (allActions[actionString]);
 
         switch (actor.type)
         {
             case "BasicActor":
-                Debug.Log("Make BasicActor");
+                // Debug.Log("Make BasicActor");
                 return new BasicActor(actor);
             default:
                 Debug.Log("Unexpected BattleAction type");

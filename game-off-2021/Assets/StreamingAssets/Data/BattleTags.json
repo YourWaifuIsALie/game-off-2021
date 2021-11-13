@@ -2,7 +2,43 @@
     {
         "name": "dummy",
         "displayName": "Dummy",
+        "type": "dummy",
         "shortDescription": "A dummy",
         "longDescription": "A very generic test tag"
+    },
+    {
+        "name": "wooden",
+        "displayName": "Wooden",
+        "type": "vulnerableFire",
+        "shortDescription": "Made out of wood and thus, burnable",
+        "longDescription": "Vulnerable to fire"
+    },
+    {
+        "name": "rubber",
+        "displayName": "Rubber",
+        "type": "rubber",
+        "shortDescription": "Testing tag",
+        "longDescription": "Testing tag"
+    },
+    {
+        "name": "glue",
+        "displayName": "Glue",
+        "type": "glue",
+        "shortDescription": "Testing tag",
+        "longDescription": "Testing tag"
+    },
+    {
+        "name": "negative",
+        "displayName": "Negative",
+        "type": "negative",
+        "shortDescription": "Testing tag",
+        "longDescription": "Testing tag"
+    },
+    {
+        "name": "positive",
+        "displayName": "Positive",
+        "type": "positive",
+        "shortDescription": "Testing tag",
+        "longDescription": "Testing tag"
     }
 ]

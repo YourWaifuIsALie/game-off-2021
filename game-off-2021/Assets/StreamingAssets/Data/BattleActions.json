@@ -8,5 +8,25 @@
         "effectStrings": [
             "basicAttack"
         ]
+    },
+    {
+        "name": "logicTest1",
+        "displayName": "logicTest1",
+        "type": "ActionAttackBasic",
+        "shortDescription": "logicTest1",
+        "longDescription": "logicTest1",
+        "effectStrings": [
+            "rubberAndGlue"
+        ]
+    },
+    {
+        "name": "logicTest2",
+        "displayName": "logicTest2",
+        "type": "ActionAttackBasic",
+        "shortDescription": "logicTest2",
+        "longDescription": "logicTest2",
+        "effectStrings": [
+            "oppositesAttract"
+        ]
     }
 ]

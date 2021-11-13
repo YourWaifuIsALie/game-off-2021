@@ -11,7 +11,91 @@
         "maxDefense": 1,
         "maxSpeed": 1,
         "level": 0,
-        "tagStrings": ["dummy"],
-        "actionStrings": ["basicAttack"]
+        "tagStrings": [
+            "dummy"
+        ],
+        "actionStrings": [
+            "basicAttack"
+        ]
+    },
+    {
+        "name": "positiveActor",
+        "displayName": "Test Actor",
+        "type": "BasicActor",
+        "shortDescription": "A dummy",
+        "longDescription": "A very generic test actor",
+        "maxHealth": 10,
+        "maxMana": 10,
+        "maxAttack": 1,
+        "maxDefense": 1,
+        "maxSpeed": 1,
+        "level": 0,
+        "tagStrings": [
+            "positive"
+        ],
+        "actionStrings": [
+            "basicAttack",
+            "logicTest2"
+        ]
+    },
+    {
+        "name": "negativeActor",
+        "displayName": "Test Actor",
+        "type": "BasicActor",
+        "shortDescription": "A dummy",
+        "longDescription": "A very generic test actor",
+        "maxHealth": 10,
+        "maxMana": 10,
+        "maxAttack": 1,
+        "maxDefense": 1,
+        "maxSpeed": 1,
+        "level": 0,
+        "tagStrings": [
+            "negative"
+        ],
+        "actionStrings": [
+            "basicAttack",
+            "logicTest2"
+        ]
+    },
+    {
+        "name": "rubberActor",
+        "displayName": "Test Actor",
+        "type": "BasicActor",
+        "shortDescription": "A dummy",
+        "longDescription": "A very generic test actor",
+        "maxHealth": 10,
+        "maxMana": 10,
+        "maxAttack": 1,
+        "maxDefense": 1,
+        "maxSpeed": 1,
+        "level": 0,
+        "tagStrings": [
+            "rubber"
+        ],
+        "actionStrings": [
+            "basicAttack",
+            "logicTest1"
+        ]
+    },
+    {
+        "name": "glueActor",
+        "displayName": "Test Actor",
+        "type": "BasicActor",
+        "shortDescription": "A dummy",
+        "longDescription": "A very generic test actor",
+        "maxHealth": 10,
+        "maxMana": 10,
+        "maxAttack": 1,
+        "maxDefense": 1,
+        "maxSpeed": 1,
+        "level": 0,
+        "tagStrings": [
+            "glue"
+        ],
+        "actionStrings": [
+            "basicAttack",
+            "logicTest1"
+        ]
     }
 ]

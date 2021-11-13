@@ -29,5 +29,80 @@
             "mul": 0.5
         },
         "condition": {}
+    },
+    {
+        "name": "fireAttack",
+        "displayName": "Fire Attack",
+        "type": "EffectPercentModifyDamage",
+        "shortDescription": "A fire attack",
+        "longDescription": "Deals 2x of origin's base attack if the target is vulnerable to fire",
+        "effectValues": {
+            "mul": 2.0
+        },
+        "condition": {
+            "target": [
+                "vulnerableFire"
+            ]
+        }
+    },
+    {
+        "name": "rubberAndGlue",
+        "displayName": "Rubber and Glue",
+        "type": "EffectPercentModifyDamage",
+        "shortDescription": "Not Yet Implemented",
+        "longDescription": "If the origin is glue and the target is rubber, reflect all damage",
+        "effectValues": {
+            "mul": 2.0
+        },
+        "condition": {
+            "and": [
+                {
+                    "origin": [
+                        "glue"
+                    ],
+                    "target": [
+                        "rubber"
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "name": "oppositesAttract",
+        "displayName": "Opposites Attract",
+        "type": "EffectPercentModifyDamage",
+        "shortDescription": "Not Yet Implemented",
+        "longDescription": "If the origin and target are opposites, negate all damage",
+        "effectValues": {
+            "mul": 2.0
+        },
+        "condition": {
+            "or": [
+                {
+                    "and": [
+                        {
+                            "origin": [
+                                "negative"
+                            ],
+                            "target": [
+                                "positive"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "and": [
+                        {
+                            "origin": [
+                                "positive"
+                            ],
+                            "target": [
+                                "negative"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
     }
 ]

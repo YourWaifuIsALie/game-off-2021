@@ -28,7 +28,7 @@ public class BattleActionFactory
         switch (action.type)
         {
             case "ActionAttackBasic":
-                Debug.Log("Make ActionAttackBasic");
+                // Debug.Log("Make ActionAttackBasic");
                 return new ActionAttackBasic(action);
             default:
                 Debug.Log("Unexpected BattleAction type");
@@ -39,7 +39,7 @@ public class BattleActionFactory
 
 public interface IBattleAction
 {
-    void act(BattleActor origin, BattleActor[] targets);
+    void act(IBattleActor origin, List<IBattleActor> targets);
 }
 public class ActionAttackBasic : IBattleAction
 {
@@ -50,21 +50,21 @@ public class ActionAttackBasic : IBattleAction
         stats = inStats;
     }
 
-    public void act(BattleActor origin, BattleActor[] targets)
+    public void act(IBattleActor origin, List<IBattleActor> targets)
     {
-        if (targets.Length > 1)
+        if (targets.Count > 1)
         {
             ; // TODO: determine multi-target behavior. Presumably, base attack to every target
         }
         else
         {
-            BattleActor target = targets[0];
+            IBattleActor target = targets[0];
             int damage = 0;
             foreach (var effect in stats.effects)
                 if (effect is IAttackDamageEffect)
                     damage = ((IAttackDamageEffect)effect).process(origin, target, damage);
             if (damage > 0)
-                target.currentHealth = target.currentHealth - damage;
+                target.stats.currentHealth = target.stats.currentHealth - damage;
         }
     }
 }
