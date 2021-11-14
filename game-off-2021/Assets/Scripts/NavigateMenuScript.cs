@@ -13,6 +13,8 @@ public class NavigateMenuScript : MonoBehaviour
     [SerializeField]
     private GameObject _levelLoader;
 
+    [SerializeField]
+    private GameObject _battleManager = default;
 
     public void ChangeMenu(GameObject menu)
     {
@@ -62,6 +64,14 @@ public class NavigateMenuScript : MonoBehaviour
         {
             Debug.LogError(e);
         }
+    }
+
+    public void StartTestBattle(string filepath)
+    {
+        _currentMenu.SetActive(false);
+
+        var script = (BattleManagerScript)_battleManager.GetComponent(typeof(BattleManagerScript));
+        script.SetupBattle(filepath);
     }
 
     public void Testfunction()

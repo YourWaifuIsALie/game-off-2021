@@ -28,7 +28,7 @@
         "maxMana": 10,
         "maxAttack": 1,
         "maxDefense": 1,
-        "maxSpeed": 1,
+        "maxSpeed": 4,
         "level": 0,
         "tagStrings": [
             "positive"
@@ -48,7 +48,7 @@
         "maxMana": 10,
         "maxAttack": 1,
         "maxDefense": 1,
-        "maxSpeed": 1,
+        "maxSpeed": 3,
         "level": 0,
         "tagStrings": [
             "negative"
@@ -88,7 +88,7 @@
         "maxMana": 10,
         "maxAttack": 1,
         "maxDefense": 1,
-        "maxSpeed": 1,
+        "maxSpeed": 2,
         "level": 0,
         "tagStrings": [
             "glue"
@@ -96,6 +96,23 @@
         "actionStrings": [
             "basicAttack",
             "logicTest1"
+        ]
+    },
+    {
+        "name": "mainCharacter",
+        "displayName": "Some Bug Girl I Guess",
+        "type": "BasicActor",
+        "shortDescription": "Main character, only character(?)",
+        "longDescription": "Main character, only character(?)",
+        "maxHealth": 10,
+        "maxMana": 10,
+        "maxAttack": 1,
+        "maxDefense": 1,
+        "maxSpeed": 5,
+        "level": 0,
+        "tagStrings": [],
+        "actionStrings": [
+            "basicAttack"
         ]
     }
 ]

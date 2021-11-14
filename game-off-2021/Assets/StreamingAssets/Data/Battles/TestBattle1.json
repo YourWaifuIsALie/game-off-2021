@@ -1,0 +1,13 @@
+{
+    "name": "testBattle1",
+    "displayName": "Test Battle 1",
+    "type": "fixedBattle",
+    "shortDescription": "Testing battle creation",
+    "longDescription": "Testing battle creation",
+    "enemyStrings": [
+        "rubberActor",
+        "glueActor",
+        "positiveActor",
+        "negativeActor"
+    ]
+}

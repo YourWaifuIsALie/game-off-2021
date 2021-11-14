@@ -58,6 +58,8 @@ public class BattleActorFactory
         foreach (var actionString in actor.actionStrings)
             actor.actions[actionString] = (allActions[actionString]);
 
+        actor.initializeActor();
+
         switch (actor.type)
         {
             case "BasicActor":

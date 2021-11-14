@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
@@ -7,13 +8,24 @@ using Newtonsoft.Json.Converters;
 
 public class BattleManagerScript : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject _actorPrefab;
+
     private Dictionary<string, BattleTag> _allTags;
     private Dictionary<string, IBattleEffect> _allEffects;
     private Dictionary<string, IBattleAction> _allActions;
     private Dictionary<string, IBattleActor> _allActors;
     private Dictionary<string, IAttackDamageEffect> _attackDamageEffects;
 
-    private string DATAPATH = Path.Combine(Application.streamingAssetsPath, "Data");
+    private static string DATAPATH = Path.Combine(Application.streamingAssetsPath, "Data");
+    private static string BATTLEPATH = Path.Combine(DATAPATH, "Battles");
+
+    enum BattleState { Inactive, Start, Input, Waiting, Cleanup }
+    private BattleState _currentState;
+
+    private List<GameObject> _playerActorObjects, _enemyActorObjects;
+
+    private List<GameObject> _currentTurnOrder, _nextTurnOrder;
 
     public void Start()
     {
@@ -27,38 +39,182 @@ public class BattleManagerScript : MonoBehaviour
         LoadActions();
         LoadActors();
 
-        // TODO remove condition testing
-        var actorOrigin = _allActors["rubberActor"];
-        var actorTarget = new List<IBattleActor> { _allActors["glueActor"] };
-        actorOrigin.stats.actions["logicTest1"].act(actorOrigin, actorTarget);
+        _playerActorObjects = new List<GameObject>();
+        _enemyActorObjects = new List<GameObject>();
+        _playerActorObjects.Add(CreateActorObject(_allActors["mainCharacter"]));
 
-        actorOrigin = _allActors["glueActor"];
-        actorTarget = new List<IBattleActor> { _allActors["rubberActor"] };
-        actorOrigin.stats.actions["logicTest1"].act(actorOrigin, actorTarget);
+        _currentState = BattleState.Inactive;
+    }
 
-        actorOrigin = _allActors["glueActor"];
-        actorTarget = new List<IBattleActor> { _allActors["glueActor"] };
-        actorOrigin.stats.actions["logicTest1"].act(actorOrigin, actorTarget);
+    public void Update()
+    {
+        switch (_currentState)
+        {
+            case BattleState.Inactive:
+                break;
+            case BattleState.Start:
+                TransitionIn();
+                break;
+            case BattleState.Input:
+                GetInput();
+                break;
+            case BattleState.Waiting:
+                ExecuteTurn();
+                break;
+            case BattleState.Cleanup:
+                SettleTurn();
+                break;
+            default:
+                break;
+        }
+    }
 
-        actorOrigin = _allActors["rubberActor"];
-        actorTarget = new List<IBattleActor> { _allActors["rubberActor"] };
-        actorOrigin.stats.actions["logicTest1"].act(actorOrigin, actorTarget);
+    public void SetupBattle(string inputPath)
+    {
+        _enemyActorObjects = new List<GameObject>();
+        string battleFilePath = inputPath;
+        if (!Path.HasExtension(battleFilePath))
+            battleFilePath = battleFilePath + ".json";
+        string filein = File.ReadAllText(Path.Combine(BATTLEPATH, battleFilePath));
+        BattleSetup battleSetup = JsonConvert.DeserializeObject<BattleSetup>(filein);
+        BattleSetupFactory.make(battleSetup, _allActors);
 
-        actorOrigin = _allActors["positiveActor"];
-        actorTarget = new List<IBattleActor> { _allActors["negativeActor"] };
-        actorOrigin.stats.actions["logicTest2"].act(actorOrigin, actorTarget);
+        foreach (IBattleActor enemyActor in battleSetup.enemies)
+            _enemyActorObjects.Add(CreateActorObject(enemyActor));
 
-        actorOrigin = _allActors["negativeActor"];
-        actorTarget = new List<IBattleActor> { _allActors["positiveActor"] };
-        actorOrigin.stats.actions["logicTest2"].act(actorOrigin, actorTarget);
+        SetupActorLocations();
+        _nextTurnOrder = _currentTurnOrder = DetermineTurnOrder();
 
-        actorOrigin = _allActors["negativeActor"];
-        actorTarget = new List<IBattleActor> { _allActors["negativeActor"] };
-        actorOrigin.stats.actions["logicTest2"].act(actorOrigin, actorTarget);
+        Debug.Log("Starting battle: " + battleSetup.displayName + " (" + battleSetup.type + ")");
+        //Debug.Log(JsonConvert.SerializeObject(battleSetup.enemies));
 
-        actorOrigin = _allActors["positiveActor"];
-        actorTarget = new List<IBattleActor> { _allActors["positiveActor"] };
-        actorOrigin.stats.actions["logicTest2"].act(actorOrigin, actorTarget);
+        _currentState = BattleState.Start;
+    }
+
+    private GameObject CreateActorObject(IBattleActor actor)
+    {
+        GameObject obj = (GameObject)Instantiate(_actorPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        var script = (BattleActorScript)obj.GetComponent(typeof(BattleActorScript));
+        script._battleActor = actor;
+        obj.name = actor.stats.name;
+        return obj;
+    }
+
+    private List<GameObject> DetermineTurnOrder()
+    {
+        var output = new List<GameObject>();
+        // OrderedList in descending order
+        var priorityQueue = new SortedList<int, List<GameObject>>(Comparer<int>.Create((x, y) => y.CompareTo(x)));
+        List<GameObject> value;
+        foreach (var actor in _playerActorObjects)
+        {
+            var script = (BattleActorScript)actor.GetComponent(typeof(BattleActorScript));
+            BattleActor battleActor = script._battleActor.stats;
+
+            if (priorityQueue.TryGetValue(battleActor.currentSpeed, out value))
+                value.Add(actor);
+            else
+                priorityQueue.Add(battleActor.currentSpeed, new List<GameObject> { actor });
+        }
+
+        foreach (var actor in _enemyActorObjects)
+        {
+            var script = (BattleActorScript)actor.GetComponent(typeof(BattleActorScript));
+            BattleActor battleActor = script._battleActor.stats;
+            if (priorityQueue.TryGetValue(battleActor.currentSpeed, out value))
+                value.Add(actor);
+            else
+                priorityQueue.Add(battleActor.currentSpeed, new List<GameObject> { actor });
+        }
+
+        foreach (KeyValuePair<int, List<GameObject>> item in priorityQueue)
+        {
+            // Debug.Log($"Item: {item.Value} with priority: {item.Key}");
+            // TODO properly randomize within each bucket so that the randomization doesn't change if all actors are the same
+            foreach (GameObject obj in item.Value)
+            {
+                output.Add(obj);
+            }
+        }
+        return output;
+    }
+
+    private void SetupActorLocations()
+    {
+        // TODO proper relative postions based on field/camera position/screen size
+        // (0,2,5) = front middle, (0,2,30) = back middle, (-15, 2, 15) = left middle
+        Vector3[] playLocations = new Vector3[] {
+            new Vector3(-15, 2, 15),
+            new Vector3(-15, 2, 5),
+            new Vector3(-15, 2, 30),
+            new Vector3(-25, 2, 15),
+            new Vector3(-25, 2, 5),
+            new Vector3(-25, 2, 30)
+        };
+
+        var i = 0;
+        foreach (var actor in _playerActorObjects)
+        {
+            actor.transform.position = playLocations[i];
+            i++;
+        }
+
+        // TODO implement math for position
+        Vector3[] enemyLocations = new Vector3[] {
+            new Vector3(15, 2, 15),
+            new Vector3(15, 2, 5),
+            new Vector3(15, 2, 30),
+            new Vector3(25, 2, 15),
+            new Vector3(25, 2, 5),
+            new Vector3(25, 2, 30)
+        };
+
+        i = 0;
+        foreach (var actor in _enemyActorObjects)
+        {
+            actor.transform.position = enemyLocations[i];
+            i++;
+        }
+    }
+
+    private void TransitionIn()
+    {
+        // TODO some fancy animation
+        _currentState = BattleState.Input;
+    }
+
+    private void GetInput()
+    {
+        _currentState = BattleState.Waiting;
+    }
+
+    private void ExecuteTurn()
+    {
+        _currentState = BattleState.Cleanup;
+    }
+
+    private void SettleTurn()
+    {
+        // If end condition
+        bool isBattleOver = false;
+        if (isBattleOver)
+        {
+            EndBattle();
+        }
+        else
+        {
+            // TODO compare planned turn order vs. next turn order
+            _nextTurnOrder = DetermineTurnOrder();
+
+            // TODO advance turn or change turn order if at end
+            _currentState = BattleState.Input;
+        }
+
+    }
+
+    private void EndBattle()
+    {
+        _currentState = BattleState.Inactive;
     }
 
     // TODO
@@ -93,7 +249,6 @@ public class BattleManagerScript : MonoBehaviour
             dynamic createdObject = BattleEffectFactory.make(element);
 
             // TODO move in-line with the factory
-            // createdObject.stats.effectValues = FixDeserialize(createdObject.stats.effectValues);
             createdObject.stats.condition = FixDeserialize(createdObject.stats.condition);
             // Debug.Log(JsonConvert.SerializeObject(createdObject.stats.condition));
 
@@ -170,5 +325,41 @@ public class BattleManagerScript : MonoBehaviour
         }
         return outputDict;
 
+    }
+
+    private void RunUnitTests()
+    {
+        //TODO figure out actual unit testing mechanism
+        var actorOrigin = _allActors["rubberActor"];
+        var actorTarget = new List<IBattleActor> { _allActors["glueActor"] };
+        actorOrigin.stats.actions["logicTest1"].act(actorOrigin, actorTarget);
+
+        actorOrigin = _allActors["glueActor"];
+        actorTarget = new List<IBattleActor> { _allActors["rubberActor"] };
+        actorOrigin.stats.actions["logicTest1"].act(actorOrigin, actorTarget);
+
+        actorOrigin = _allActors["glueActor"];
+        actorTarget = new List<IBattleActor> { _allActors["glueActor"] };
+        actorOrigin.stats.actions["logicTest1"].act(actorOrigin, actorTarget);
+
+        actorOrigin = _allActors["rubberActor"];
+        actorTarget = new List<IBattleActor> { _allActors["rubberActor"] };
+        actorOrigin.stats.actions["logicTest1"].act(actorOrigin, actorTarget);
+
+        actorOrigin = _allActors["positiveActor"];
+        actorTarget = new List<IBattleActor> { _allActors["negativeActor"] };
+        actorOrigin.stats.actions["logicTest2"].act(actorOrigin, actorTarget);
+
+        actorOrigin = _allActors["negativeActor"];
+        actorTarget = new List<IBattleActor> { _allActors["positiveActor"] };
+        actorOrigin.stats.actions["logicTest2"].act(actorOrigin, actorTarget);
+
+        actorOrigin = _allActors["negativeActor"];
+        actorTarget = new List<IBattleActor> { _allActors["negativeActor"] };
+        actorOrigin.stats.actions["logicTest2"].act(actorOrigin, actorTarget);
+
+        actorOrigin = _allActors["positiveActor"];
+        actorTarget = new List<IBattleActor> { _allActors["positiveActor"] };
+        actorOrigin.stats.actions["logicTest2"].act(actorOrigin, actorTarget);
     }
 }
