@@ -20,7 +20,7 @@
     },
     {
         "name": "positiveActor",
-        "displayName": "Test Actor",
+        "displayName": "Positive Actor",
         "type": "BasicActor",
         "shortDescription": "A dummy",
         "longDescription": "A very generic test actor",
@@ -40,7 +40,7 @@
     },
     {
         "name": "negativeActor",
-        "displayName": "Test Actor",
+        "displayName": "Negative Actor",
         "type": "BasicActor",
         "shortDescription": "A dummy",
         "longDescription": "A very generic test actor",
@@ -60,7 +60,7 @@
     },
     {
         "name": "rubberActor",
-        "displayName": "Test Actor",
+        "displayName": "Rubber Actor",
         "type": "BasicActor",
         "shortDescription": "A dummy",
         "longDescription": "A very generic test actor",
@@ -80,7 +80,7 @@
     },
     {
         "name": "glueActor",
-        "displayName": "Test Actor",
+        "displayName": "Glue Actor",
         "type": "BasicActor",
         "shortDescription": "A dummy",
         "longDescription": "A very generic test actor",
@@ -100,7 +100,7 @@
     },
     {
         "name": "mainCharacter",
-        "displayName": "Some Bug Girl I Guess",
+        "displayName": "Main Character",
         "type": "BasicActor",
         "shortDescription": "Main character, only character(?)",
         "longDescription": "Main character, only character(?)",

@@ -11,6 +11,11 @@ public class BattleManagerScript : MonoBehaviour
     [SerializeField]
     private GameObject _actorPrefab;
 
+    [SerializeField]
+    private GameObject _battleMenu;
+
+    public PlayerEvent _playerInputEvent { get; set; }
+
     private Dictionary<string, BattleTag> _allTags;
     private Dictionary<string, IBattleEffect> _allEffects;
     private Dictionary<string, IBattleAction> _allActions;
@@ -20,12 +25,15 @@ public class BattleManagerScript : MonoBehaviour
     private static string DATAPATH = Path.Combine(Application.streamingAssetsPath, "Data");
     private static string BATTLEPATH = Path.Combine(DATAPATH, "Battles");
 
-    enum BattleState { Inactive, Start, Input, Waiting, Cleanup }
+    enum BattleState { Inactive, Start, Input, Action, Waiting, Cleanup }
     private BattleState _currentState;
 
     private List<GameObject> _playerActorObjects, _enemyActorObjects;
-
-    private List<GameObject> _currentTurnOrder, _nextTurnOrder;
+    public List<GameObject> _currentTurnOrder { get; set; }
+    public List<GameObject> _nextTurnOrder { get; set; }
+    private int _currentActorIndex;
+    public GameObject _currentActor { get; set; }
+    private string _currentPlayerAction;
 
     public void Start()
     {
@@ -43,7 +51,17 @@ public class BattleManagerScript : MonoBehaviour
         _enemyActorObjects = new List<GameObject>();
         _playerActorObjects.Add(CreateActorObject(_allActors["mainCharacter"]));
 
+        _playerInputEvent = new PlayerEvent();
+        _playerInputEvent.AddListener(PlayerEventHandler);
+        _battleMenu.SetActive(false);
+
         _currentState = BattleState.Inactive;
+    }
+
+    private void PlayerEventHandler(string eventValue)
+    {
+        _currentPlayerAction = eventValue;
+        // Debug.Log($"Player event received: {eventValue}");
     }
 
     public void Update()
@@ -58,8 +76,10 @@ public class BattleManagerScript : MonoBehaviour
             case BattleState.Input:
                 GetInput();
                 break;
-            case BattleState.Waiting:
+            case BattleState.Action:
                 ExecuteTurn();
+                break;
+            case BattleState.Waiting:
                 break;
             case BattleState.Cleanup:
                 SettleTurn();
@@ -84,6 +104,10 @@ public class BattleManagerScript : MonoBehaviour
 
         SetupActorLocations();
         _nextTurnOrder = _currentTurnOrder = DetermineTurnOrder();
+        _currentActorIndex = 0;
+        _currentActor = _currentTurnOrder[_currentActorIndex];
+
+        _battleMenu.SetActive(true);
 
         Debug.Log("Starting battle: " + battleSetup.displayName + " (" + battleSetup.type + ")");
         //Debug.Log(JsonConvert.SerializeObject(battleSetup.enemies));
@@ -185,13 +209,35 @@ public class BattleManagerScript : MonoBehaviour
 
     private void GetInput()
     {
-        _currentState = BattleState.Waiting;
+        if (_playerActorObjects.Contains(_currentActor))
+        {
+            if (_currentPlayerAction != null)
+            {
+                _currentPlayerAction = null;
+                _currentState = BattleState.Action;
+            }
+            // Debug.Log($"Player turn for: {_currentActor.name}");
+        }
+        else
+        {
+            // Debug.Log($"Enemy turn for: {_currentActor.name}");
+            _currentState = BattleState.Action;
+        }
     }
 
     private void ExecuteTurn()
     {
+        StartCoroutine(ArtificialSlowdown(1));
+        _currentState = BattleState.Waiting;
+    }
+
+    public IEnumerator ArtificialSlowdown(int seconds)
+    {
+        Debug.Log($"{_currentActor.name} acting");
+        yield return new WaitForSeconds(seconds);
         _currentState = BattleState.Cleanup;
     }
+
 
     private void SettleTurn()
     {
@@ -204,9 +250,17 @@ public class BattleManagerScript : MonoBehaviour
         else
         {
             // TODO compare planned turn order vs. next turn order
+            // TODO graphical event system for recalculated turn order animation?
             _nextTurnOrder = DetermineTurnOrder();
 
-            // TODO advance turn or change turn order if at end
+            _currentActorIndex += 1;
+            if (_currentActorIndex >= _currentTurnOrder.Count)
+            {
+                _currentTurnOrder = _nextTurnOrder;
+                _currentActorIndex = 0;
+            }
+            _currentActor = _currentTurnOrder[_currentActorIndex];
+
             _currentState = BattleState.Input;
         }
 
@@ -214,15 +268,9 @@ public class BattleManagerScript : MonoBehaviour
 
     private void EndBattle()
     {
+        _battleMenu.SetActive(false);
         _currentState = BattleState.Inactive;
     }
-
-    // TODO
-    // Start Battle (also from json, random battle would just generate json in memory?)
-    // FSM - Start, Input (player or AI), Action, Cleanup
-    // Turn tracking
-    // Turn order
-    // UI
 
     // TODO generic loader + factory setup?
     private void LoadTags()
