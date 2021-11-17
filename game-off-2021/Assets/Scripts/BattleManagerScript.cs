@@ -16,6 +16,8 @@ public class BattleManagerScript : MonoBehaviour
 
     public PlayerEvent _playerInputEvent { get; set; }
 
+    private System.Random _rng;
+
     private Dictionary<string, BattleTag> _allTags;
     private Dictionary<string, IBattleEffect> _allEffects;
     private Dictionary<string, IBattleAction> _allActions;
@@ -32,11 +34,16 @@ public class BattleManagerScript : MonoBehaviour
     public List<GameObject> _currentTurnOrder { get; set; }
     public List<GameObject> _nextTurnOrder { get; set; }
     private int _currentActorIndex;
-    public GameObject _currentActor { get; set; }
     private string _currentPlayerAction;
+    private IBattleAction _currentActorAction;
+
+    public GameObject _currentActor { get; set; }
+    public GameObject _currentTargetActor { get; set; }
 
     public void Start()
     {
+        _rng = new System.Random();
+
         _allTags = new Dictionary<string, BattleTag>();
         _allEffects = new Dictionary<string, IBattleEffect>();
         _allActions = new Dictionary<string, IBattleAction>();
@@ -54,6 +61,9 @@ public class BattleManagerScript : MonoBehaviour
         _playerInputEvent = new PlayerEvent();
         _playerInputEvent.AddListener(PlayerEventHandler);
         _battleMenu.SetActive(false);
+
+        _currentActor = null;
+        _currentTargetActor = null;
 
         _currentState = BattleState.Inactive;
     }
@@ -143,8 +153,14 @@ public class BattleManagerScript : MonoBehaviour
 
         foreach (var actor in _enemyActorObjects)
         {
+            // TODO switch to using method, currently Null Reference for some reason
+            // Debug.Log($"{actor.GetType()}");
+            // Debug.Log($"{GetScriptComponent<BattleActorScript>(actor)}");
+            // BattleActor battleActor = GetScriptComponent<BattleActorScript>(actor)._battleActor.stats;
+
             var script = (BattleActorScript)actor.GetComponent(typeof(BattleActorScript));
             BattleActor battleActor = script._battleActor.stats;
+
             if (priorityQueue.TryGetValue(battleActor.currentSpeed, out value))
                 value.Add(actor);
             else
@@ -213,14 +229,42 @@ public class BattleManagerScript : MonoBehaviour
         {
             if (_currentPlayerAction != null)
             {
-                _currentPlayerAction = null;
-                _currentState = BattleState.Action;
+                // TODO Add selection of target for player
+                Dictionary<string, IBattleAction> possibleActionsDict = GetScriptComponent<BattleActorScript>(_currentActor)._battleActor.stats.actions;
+                if (possibleActionsDict.ContainsKey(_currentPlayerAction))
+                {
+                    _currentActorAction = possibleActionsDict[_currentPlayerAction];
+
+                    // TODO remove randomly deciding target
+                    int randomIndex = _rng.Next(_enemyActorObjects.Count);
+                    _currentTargetActor = _enemyActorObjects[randomIndex];
+
+                    _currentPlayerAction = null;
+                    _currentState = BattleState.Action;
+                }
+                else
+                {
+                    _currentPlayerAction = null;
+                    Debug.Log("Illegal player action");
+                }
+
             }
             // Debug.Log($"Player turn for: {_currentActor.name}");
         }
         else
         {
             // Debug.Log($"Enemy turn for: {_currentActor.name}");
+            // Randomly decide action
+            Dictionary<string, IBattleAction> possibleActionsDict = GetScriptComponent<BattleActorScript>(_currentActor)._battleActor.stats.actions;
+            List<String> possibleActionsStr = new List<string>(possibleActionsDict.Keys);
+            string randomKey = possibleActionsStr[_rng.Next(possibleActionsStr.Count)];
+            _currentActorAction = possibleActionsDict[randomKey];
+
+            // TODO add logic for valid target selection
+            // Randomly decide target
+            int randomIndex = _rng.Next(_playerActorObjects.Count);
+            _currentTargetActor = _playerActorObjects[randomIndex];
+
             _currentState = BattleState.Action;
         }
     }
@@ -233,11 +277,19 @@ public class BattleManagerScript : MonoBehaviour
 
     public IEnumerator ArtificialSlowdown(int seconds)
     {
-        Debug.Log($"{_currentActor.name} acting");
+        Debug.Log($"[{_currentActor.name}] is [{_currentActorAction.stats.displayName}ing] [{_currentTargetActor.name}]");
+        var origin = GetScriptComponent<BattleActorScript>(_currentActor)._battleActor;
+        var target = GetScriptComponent<BattleActorScript>(_currentTargetActor)._battleActor;
+        _currentActorAction.act(origin, new List<IBattleActor> { target });
+        Debug.Log($"{_currentTargetActor.name}: {target.stats.currentHealth}/{target.stats.maxHealth}");
         yield return new WaitForSeconds(seconds);
         _currentState = BattleState.Cleanup;
     }
 
+    public T GetScriptComponent<T>(GameObject obj) where T : MonoBehaviour
+    {
+        return (T)_currentActor.GetComponent(typeof(T));
+    }
 
     private void SettleTurn()
     {

@@ -556,6 +556,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5758352842136492928, guid: 12b2e874562a99743afe4755012005f9, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: basicAttack
+      objectReference: {fileID: 0}
     - target: {fileID: 5758352843572533091, guid: 12b2e874562a99743afe4755012005f9, type: 3}
       propertyPath: m_Name
       value: BattleManagerPrefab

@@ -106,7 +106,7 @@
         "longDescription": "Main character, only character(?)",
         "maxHealth": 10,
         "maxMana": 10,
-        "maxAttack": 1,
+        "maxAttack": 10,
         "maxDefense": 1,
         "maxSpeed": 5,
         "level": 0,

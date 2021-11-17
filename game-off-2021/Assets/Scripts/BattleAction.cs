@@ -39,6 +39,8 @@ public class BattleActionFactory
 
 public interface IBattleAction
 {
+    BattleAction stats { get; set; }
+
     void act(IBattleActor origin, List<IBattleActor> targets);
 }
 public class ActionAttackBasic : IBattleAction
