@@ -30,7 +30,8 @@ public class BattleManagerScript : MonoBehaviour
     enum BattleState { Inactive, Start, Input, Action, Waiting, Cleanup }
     private BattleState _currentState;
 
-    private List<GameObject> _playerActorObjects, _enemyActorObjects;
+    public List<GameObject> _playerActorObjects { get; set; }
+    public List<GameObject> _enemyActorObjects { get; set; }
     public List<GameObject> _currentTurnOrder { get; set; }
     public List<GameObject> _nextTurnOrder { get; set; }
     private int _currentActorIndex;
@@ -254,6 +255,7 @@ public class BattleManagerScript : MonoBehaviour
         else
         {
             // Debug.Log($"Enemy turn for: {_currentActor.name}");
+
             // Randomly decide action
             Dictionary<string, IBattleAction> possibleActionsDict = GetScriptComponent<BattleActorScript>(_currentActor)._battleActor.stats.actions;
             List<String> possibleActionsStr = new List<string>(possibleActionsDict.Keys);
@@ -280,8 +282,8 @@ public class BattleManagerScript : MonoBehaviour
         Debug.Log($"[{_currentActor.name}] is [{_currentActorAction.stats.displayName}ing] [{_currentTargetActor.name}]");
         var origin = GetScriptComponent<BattleActorScript>(_currentActor)._battleActor;
         var target = GetScriptComponent<BattleActorScript>(_currentTargetActor)._battleActor;
-        _currentActorAction.act(origin, new List<IBattleActor> { target });
-        Debug.Log($"{_currentTargetActor.name}: {target.stats.currentHealth}/{target.stats.maxHealth}");
+        _currentActorAction.Act(origin, new List<IBattleActor> { target });
+        // Debug.Log($"{_currentTargetActor.name}: {target.stats.currentHealth}/{target.stats.maxHealth}");
         yield return new WaitForSeconds(seconds);
         _currentState = BattleState.Cleanup;
     }
@@ -312,7 +314,7 @@ public class BattleManagerScript : MonoBehaviour
                 _currentActorIndex = 0;
             }
             _currentActor = _currentTurnOrder[_currentActorIndex];
-
+            _currentPlayerAction = null;
             _currentState = BattleState.Input;
         }
 
@@ -367,7 +369,7 @@ public class BattleManagerScript : MonoBehaviour
 
         foreach (var element in elementList)
         {
-            dynamic createdObject = BattleActionFactory.make(element, _allEffects);
+            dynamic createdObject = BattleActionFactory.Make(element, _allEffects);
             if (createdObject is IBattleAction)
                 _allActions[createdObject.stats.name] = createdObject;
         }
@@ -432,34 +434,34 @@ public class BattleManagerScript : MonoBehaviour
         //TODO figure out actual unit testing mechanism
         var actorOrigin = _allActors["rubberActor"];
         var actorTarget = new List<IBattleActor> { _allActors["glueActor"] };
-        actorOrigin.stats.actions["logicTest1"].act(actorOrigin, actorTarget);
+        actorOrigin.stats.actions["logicTest1"].Act(actorOrigin, actorTarget);
 
         actorOrigin = _allActors["glueActor"];
         actorTarget = new List<IBattleActor> { _allActors["rubberActor"] };
-        actorOrigin.stats.actions["logicTest1"].act(actorOrigin, actorTarget);
+        actorOrigin.stats.actions["logicTest1"].Act(actorOrigin, actorTarget);
 
         actorOrigin = _allActors["glueActor"];
         actorTarget = new List<IBattleActor> { _allActors["glueActor"] };
-        actorOrigin.stats.actions["logicTest1"].act(actorOrigin, actorTarget);
+        actorOrigin.stats.actions["logicTest1"].Act(actorOrigin, actorTarget);
 
         actorOrigin = _allActors["rubberActor"];
         actorTarget = new List<IBattleActor> { _allActors["rubberActor"] };
-        actorOrigin.stats.actions["logicTest1"].act(actorOrigin, actorTarget);
+        actorOrigin.stats.actions["logicTest1"].Act(actorOrigin, actorTarget);
 
         actorOrigin = _allActors["positiveActor"];
         actorTarget = new List<IBattleActor> { _allActors["negativeActor"] };
-        actorOrigin.stats.actions["logicTest2"].act(actorOrigin, actorTarget);
+        actorOrigin.stats.actions["logicTest2"].Act(actorOrigin, actorTarget);
 
         actorOrigin = _allActors["negativeActor"];
         actorTarget = new List<IBattleActor> { _allActors["positiveActor"] };
-        actorOrigin.stats.actions["logicTest2"].act(actorOrigin, actorTarget);
+        actorOrigin.stats.actions["logicTest2"].Act(actorOrigin, actorTarget);
 
         actorOrigin = _allActors["negativeActor"];
         actorTarget = new List<IBattleActor> { _allActors["negativeActor"] };
-        actorOrigin.stats.actions["logicTest2"].act(actorOrigin, actorTarget);
+        actorOrigin.stats.actions["logicTest2"].Act(actorOrigin, actorTarget);
 
         actorOrigin = _allActors["positiveActor"];
         actorTarget = new List<IBattleActor> { _allActors["positiveActor"] };
-        actorOrigin.stats.actions["logicTest2"].act(actorOrigin, actorTarget);
+        actorOrigin.stats.actions["logicTest2"].Act(actorOrigin, actorTarget);
     }
 }

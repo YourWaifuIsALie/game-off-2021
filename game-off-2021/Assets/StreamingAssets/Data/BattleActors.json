@@ -8,7 +8,7 @@
         "maxHealth": 10,
         "maxMana": 10,
         "maxAttack": 1,
-        "maxDefense": 1,
+        "maxDefense": 0,
         "maxSpeed": 1,
         "level": 0,
         "tagStrings": [
@@ -27,7 +27,7 @@
         "maxHealth": 10,
         "maxMana": 10,
         "maxAttack": 1,
-        "maxDefense": 1,
+        "maxDefense": 0,
         "maxSpeed": 4,
         "level": 0,
         "tagStrings": [
@@ -47,7 +47,7 @@
         "maxHealth": 10,
         "maxMana": 10,
         "maxAttack": 1,
-        "maxDefense": 1,
+        "maxDefense": 0,
         "maxSpeed": 3,
         "level": 0,
         "tagStrings": [
@@ -67,7 +67,7 @@
         "maxHealth": 10,
         "maxMana": 10,
         "maxAttack": 1,
-        "maxDefense": 1,
+        "maxDefense": 0,
         "maxSpeed": 1,
         "level": 0,
         "tagStrings": [
@@ -87,7 +87,7 @@
         "maxHealth": 10,
         "maxMana": 10,
         "maxAttack": 1,
-        "maxDefense": 1,
+        "maxDefense": 0,
         "maxSpeed": 2,
         "level": 0,
         "tagStrings": [
@@ -106,8 +106,8 @@
         "longDescription": "Main character, only character(?)",
         "maxHealth": 10,
         "maxMana": 10,
-        "maxAttack": 10,
-        "maxDefense": 1,
+        "maxAttack": 5,
+        "maxDefense": 0,
         "maxSpeed": 5,
         "level": 0,
         "tagStrings": [],

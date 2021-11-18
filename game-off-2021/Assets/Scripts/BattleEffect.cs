@@ -118,7 +118,7 @@ public interface IBattleEffect
 }
 public interface IAttackDamageEffect : IBattleEffect
 {
-    int process(IBattleActor origin, IBattleActor target, int damage);
+    int Process(IBattleActor origin, IBattleActor target, int damage);
 }
 
 public class EffectBasicAttack : IAttackDamageEffect
@@ -134,7 +134,7 @@ public class EffectBasicAttack : IAttackDamageEffect
         _additionalDamage = stats.effectValues.ContainsKey(BattleEffect.ADD) ? (int)stats.effectValues[BattleEffect.ADD] : 0;
     }
 
-    public int process(IBattleActor origin, IBattleActor target, int damage)
+    public int Process(IBattleActor origin, IBattleActor target, int damage)
     {
         int moreDamage = origin.stats.currentAttack + _additionalDamage - target.stats.currentDefense;
         if (moreDamage > 0)
@@ -156,7 +156,7 @@ public class EffectPercentModifyDamage : IAttackDamageEffect
         _percentChange = stats.effectValues.ContainsKey(BattleEffect.MUL) ? (float)stats.effectValues[BattleEffect.MUL] : 1.0f;
     }
 
-    public int process(IBattleActor origin, IBattleActor target, int damage)
+    public int Process(IBattleActor origin, IBattleActor target, int damage)
     {
         Debug.Log(origin.stats.name + " acting on " + target.stats.name + " -- " + stats.evaluateCondition(origin, target));
         if (stats.evaluateCondition(origin, target))

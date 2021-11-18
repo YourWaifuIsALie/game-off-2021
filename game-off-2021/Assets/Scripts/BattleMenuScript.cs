@@ -11,9 +11,13 @@ public class BattleMenuScript : MonoBehaviour
     [SerializeField]
     private Text _turnOrderDisplay;
 
+    [SerializeField]
+    private GameObject _camera;
+
     public void Update()
     {
         UpdateTurnOrderDisplay();
+        UpdateHealthBars();
     }
 
     // TODO graphical event system for recalculated turn order animation?
@@ -31,6 +35,31 @@ public class BattleMenuScript : MonoBehaviour
                 turnOrderString += " [" + displayName + "] ";
         }
         _turnOrderDisplay.text = turnOrderString;
+    }
+
+    private void UpdateHealthBars()
+    {
+        foreach (var obj in _battleManager._playerActorObjects)
+        {
+            var actorScript = (BattleActorScript)obj.GetComponent(typeof(BattleActorScript));
+            int currentHealth = actorScript._battleActor.stats.currentHealth;
+            var maxHealth = actorScript._battleActor.stats.maxHealth;
+            var graphicsScript = (BattleActorGraphicScript)actorScript.battleActorGraphics.GetComponent(typeof(BattleActorGraphicScript));
+            graphicsScript.UpdateHealth(currentHealth, maxHealth);
+            graphicsScript.UpdateName(actorScript._battleActor.stats.displayName);
+            graphicsScript.RotateTowards(_camera.transform);
+
+        }
+        foreach (var obj in _battleManager._enemyActorObjects)
+        {
+            var actorScript = (BattleActorScript)obj.GetComponent(typeof(BattleActorScript));
+            int currentHealth = actorScript._battleActor.stats.currentHealth;
+            var maxHealth = actorScript._battleActor.stats.maxHealth;
+            var graphicsScript = (BattleActorGraphicScript)actorScript.battleActorGraphics.GetComponent(typeof(BattleActorGraphicScript));
+            graphicsScript.UpdateHealth(currentHealth, maxHealth);
+            graphicsScript.UpdateName(actorScript._battleActor.stats.displayName);
+            graphicsScript.RotateTowards(_camera.transform);
+        }
     }
 
     private string GetDisplayName(GameObject obj)

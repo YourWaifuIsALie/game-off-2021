@@ -20,7 +20,7 @@ public class BattleAction
 public class BattleActionFactory
 {
     // TODO some fancy way to deserialize directly and safely
-    public static IBattleAction make(BattleAction action, Dictionary<string, IBattleEffect> allEffects)
+    public static IBattleAction Make(BattleAction action, Dictionary<string, IBattleEffect> allEffects)
     {
         foreach (var effectString in action.effectStrings)
             action.effects.Add(allEffects[effectString]);
@@ -41,7 +41,7 @@ public interface IBattleAction
 {
     BattleAction stats { get; set; }
 
-    void act(IBattleActor origin, List<IBattleActor> targets);
+    void Act(IBattleActor origin, List<IBattleActor> targets);
 }
 public class ActionAttackBasic : IBattleAction
 {
@@ -52,7 +52,7 @@ public class ActionAttackBasic : IBattleAction
         stats = inStats;
     }
 
-    public void act(IBattleActor origin, List<IBattleActor> targets)
+    public void Act(IBattleActor origin, List<IBattleActor> targets)
     {
         if (targets.Count > 1)
         {
@@ -64,7 +64,7 @@ public class ActionAttackBasic : IBattleAction
             int damage = 0;
             foreach (var effect in stats.effects)
                 if (effect is IAttackDamageEffect)
-                    damage = ((IAttackDamageEffect)effect).process(origin, target, damage);
+                    damage = ((IAttackDamageEffect)effect).Process(origin, target, damage);
             if (damage > 0)
                 target.stats.currentHealth = target.stats.currentHealth - damage;
         }
