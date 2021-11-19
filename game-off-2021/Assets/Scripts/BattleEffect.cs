@@ -158,7 +158,7 @@ public class EffectPercentModifyDamage : IAttackDamageEffect
 
     public int Process(IBattleActor origin, IBattleActor target, int damage)
     {
-        Debug.Log(origin.stats.name + " acting on " + target.stats.name + " -- " + stats.evaluateCondition(origin, target));
+        // Debug.Log(origin.stats.name + " acting on " + target.stats.name + " -- " + stats.evaluateCondition(origin, target));
         if (stats.evaluateCondition(origin, target))
             return (int)(damage * _percentChange);  // TODO: determinism worries? non-float ways to calculate?
         else

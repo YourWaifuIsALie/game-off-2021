@@ -32,6 +32,8 @@ public class BattleManagerScript : MonoBehaviour
 
     public List<GameObject> _playerActorObjects { get; set; }
     public List<GameObject> _enemyActorObjects { get; set; }
+    public List<GameObject> _deadPlayerActorObjects { get; set; }
+    public List<GameObject> _deadEnemyActorObjects { get; set; }
     public List<GameObject> _currentTurnOrder { get; set; }
     public List<GameObject> _nextTurnOrder { get; set; }
     private int _currentActorIndex;
@@ -57,6 +59,8 @@ public class BattleManagerScript : MonoBehaviour
 
         _playerActorObjects = new List<GameObject>();
         _enemyActorObjects = new List<GameObject>();
+        _deadPlayerActorObjects = new List<GameObject>();
+        _deadEnemyActorObjects = new List<GameObject>();
         _playerActorObjects.Add(CreateActorObject(_allActors["mainCharacter"]));
 
         _playerInputEvent = new PlayerEvent();
@@ -129,7 +133,7 @@ public class BattleManagerScript : MonoBehaviour
     private GameObject CreateActorObject(IBattleActor actor)
     {
         GameObject obj = (GameObject)Instantiate(_actorPrefab, new Vector3(0, 0, 0), Quaternion.identity);
-        var script = (BattleActorScript)obj.GetComponent(typeof(BattleActorScript));
+        var script = GetScriptComponent<BattleActorScript>(obj);
         script._battleActor = actor;
         obj.name = actor.stats.name;
         return obj;
@@ -143,8 +147,7 @@ public class BattleManagerScript : MonoBehaviour
         List<GameObject> value;
         foreach (var actor in _playerActorObjects)
         {
-            var script = (BattleActorScript)actor.GetComponent(typeof(BattleActorScript));
-            BattleActor battleActor = script._battleActor.stats;
+            BattleActor battleActor = GetScriptComponent<BattleActorScript>(actor)._battleActor.stats;
 
             if (priorityQueue.TryGetValue(battleActor.currentSpeed, out value))
                 value.Add(actor);
@@ -154,13 +157,7 @@ public class BattleManagerScript : MonoBehaviour
 
         foreach (var actor in _enemyActorObjects)
         {
-            // TODO switch to using method, currently Null Reference for some reason
-            // Debug.Log($"{actor.GetType()}");
-            // Debug.Log($"{GetScriptComponent<BattleActorScript>(actor)}");
-            // BattleActor battleActor = GetScriptComponent<BattleActorScript>(actor)._battleActor.stats;
-
-            var script = (BattleActorScript)actor.GetComponent(typeof(BattleActorScript));
-            BattleActor battleActor = script._battleActor.stats;
+            BattleActor battleActor = GetScriptComponent<BattleActorScript>(actor)._battleActor.stats;
 
             if (priorityQueue.TryGetValue(battleActor.currentSpeed, out value))
                 value.Add(actor);
@@ -280,23 +277,29 @@ public class BattleManagerScript : MonoBehaviour
     public IEnumerator ArtificialSlowdown(int seconds)
     {
         Debug.Log($"[{_currentActor.name}] is [{_currentActorAction.stats.displayName}ing] [{_currentTargetActor.name}]");
+
         var origin = GetScriptComponent<BattleActorScript>(_currentActor)._battleActor;
         var target = GetScriptComponent<BattleActorScript>(_currentTargetActor)._battleActor;
         _currentActorAction.Act(origin, new List<IBattleActor> { target });
-        // Debug.Log($"{_currentTargetActor.name}: {target.stats.currentHealth}/{target.stats.maxHealth}");
         yield return new WaitForSeconds(seconds);
         _currentState = BattleState.Cleanup;
     }
 
     public T GetScriptComponent<T>(GameObject obj) where T : MonoBehaviour
     {
-        return (T)_currentActor.GetComponent(typeof(T));
+        return (T)obj.GetComponent(typeof(T));
     }
 
     private void SettleTurn()
     {
         // If end condition
         bool isBattleOver = false;
+        CheckAndRemoveDeadObjects(_playerActorObjects, _deadPlayerActorObjects);
+        CheckAndRemoveDeadObjects(_enemyActorObjects, _deadEnemyActorObjects);
+
+        if (_playerActorObjects.Count == 0 || _enemyActorObjects.Count == 0)
+            isBattleOver = true;
+
         if (isBattleOver)
         {
             EndBattle();
@@ -320,8 +323,27 @@ public class BattleManagerScript : MonoBehaviour
 
     }
 
+    private void CheckAndRemoveDeadObjects(List<GameObject> livingList, List<GameObject> deadList)
+    {
+        foreach (var actorObject in livingList)
+        {
+            var actor = GetScriptComponent<BattleActorScript>(actorObject)._battleActor;
+            if (!actor.stats.CheckAlive())
+                deadList.Add(actorObject);
+        }
+        livingList.RemoveAll(x => GetScriptComponent<BattleActorScript>(x)._battleActor.stats.isAlive == false);
+    }
+
     private void EndBattle()
     {
+        if (_playerActorObjects.Count == 0)
+        {
+            Debug.Log("YOU LOSE");
+        }
+        else
+        {
+            Debug.Log("VICTORY");
+        }
         _battleMenu.SetActive(false);
         _currentState = BattleState.Inactive;
     }

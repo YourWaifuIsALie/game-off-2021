@@ -35,7 +35,7 @@ public class BattleActor
         actions = new Dictionary<string, IBattleAction>();
     }
 
-    public void initializeActor()
+    public void InitializeActor()
     {
         currentHealth = maxHealth;
         currentMana = maxMana;
@@ -43,6 +43,23 @@ public class BattleActor
         currentDefense = maxDefense;
         currentSpeed = maxSpeed;
         isAlive = true;
+    }
+
+    public bool CheckAlive()
+    {
+        if (currentHealth <= 0)
+        {
+            isAlive = false;
+            return false;
+        }
+        else if (currentHealth > 127)
+        {
+            // Overflow a "byte" of health
+            currentHealth = -128 + (currentHealth - 128);
+            isAlive = false;
+            return false;
+        }
+        return true;
     }
 
 }
@@ -58,7 +75,7 @@ public class BattleActorFactory
         foreach (var actionString in actor.actionStrings)
             actor.actions[actionString] = (allActions[actionString]);
 
-        actor.initializeActor();
+        actor.InitializeActor();
 
         switch (actor.type)
         {

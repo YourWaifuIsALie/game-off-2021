@@ -17,7 +17,10 @@ public class BattleMenuScript : MonoBehaviour
     public void Update()
     {
         UpdateTurnOrderDisplay();
-        UpdateHealthBars();
+        UpdateHealthBars(_battleManager._playerActorObjects);
+        UpdateHealthBars(_battleManager._enemyActorObjects);
+        UpdateDead(_battleManager._deadPlayerActorObjects);
+        UpdateDead(_battleManager._deadEnemyActorObjects);
     }
 
     // TODO graphical event system for recalculated turn order animation?
@@ -37,28 +40,26 @@ public class BattleMenuScript : MonoBehaviour
         _turnOrderDisplay.text = turnOrderString;
     }
 
-    private void UpdateHealthBars()
+    private void UpdateHealthBars(List<GameObject> actorObjects)
     {
-        foreach (var obj in _battleManager._playerActorObjects)
+        foreach (var actorObject in actorObjects)
         {
-            var actorScript = (BattleActorScript)obj.GetComponent(typeof(BattleActorScript));
+            var actorScript = (BattleActorScript)actorObject.GetComponent(typeof(BattleActorScript));
             int currentHealth = actorScript._battleActor.stats.currentHealth;
             var maxHealth = actorScript._battleActor.stats.maxHealth;
             var graphicsScript = (BattleActorGraphicScript)actorScript.battleActorGraphics.GetComponent(typeof(BattleActorGraphicScript));
             graphicsScript.UpdateHealth(currentHealth, maxHealth);
             graphicsScript.UpdateName(actorScript._battleActor.stats.displayName);
             graphicsScript.RotateTowards(_camera.transform);
-
         }
-        foreach (var obj in _battleManager._enemyActorObjects)
+    }
+
+    private void UpdateDead(List<GameObject> actorObjects)
+    {
+        foreach (var actorObject in actorObjects)
         {
-            var actorScript = (BattleActorScript)obj.GetComponent(typeof(BattleActorScript));
-            int currentHealth = actorScript._battleActor.stats.currentHealth;
-            var maxHealth = actorScript._battleActor.stats.maxHealth;
-            var graphicsScript = (BattleActorGraphicScript)actorScript.battleActorGraphics.GetComponent(typeof(BattleActorGraphicScript));
-            graphicsScript.UpdateHealth(currentHealth, maxHealth);
-            graphicsScript.UpdateName(actorScript._battleActor.stats.displayName);
-            graphicsScript.RotateTowards(_camera.transform);
+            Vector3 inTheGround = new Vector3(actorObject.transform.position.x, 0, actorObject.transform.position.z);
+            actorObject.transform.position = inTheGround;
         }
     }
 
