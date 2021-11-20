@@ -14,6 +14,32 @@ public class BattleMenuScript : MonoBehaviour
     [SerializeField]
     private GameObject _camera;
 
+    [SerializeField]
+    private Button _attackButton;
+
+    public PlayerEvent _buttonResponseEvent { get; set; }
+
+    public void Start()
+    {
+        _buttonResponseEvent = new PlayerEvent();
+        _buttonResponseEvent.AddListener(PlayerEventHandler);
+    }
+
+    private void PlayerEventHandler(string eventValue)
+    {
+        switch (eventValue)
+        {
+            case "allDisable":
+                _attackButton.interactable = false;
+                break;
+            case "allEnable":
+                _attackButton.interactable = true;
+                break;
+            default:
+                break;
+        }
+    }
+
     public void Update()
     {
         UpdateTurnOrderDisplay();

@@ -646,6 +646,7 @@ MonoBehaviour:
   _battleManager: {fileID: 5758352843572533090}
   _turnOrderDisplay: {fileID: 5758352841885555152}
   _camera: {fileID: 0}
+  _attackButton: {fileID: 5758352842136492928}
 --- !u!1 &5758352843572533091
 GameObject:
   m_ObjectHideFlags: 0
@@ -696,6 +697,7 @@ MonoBehaviour:
   _selectableLayer:
     serializedVersion: 2
     m_Bits: 32768
+  _ignoreSelectionList: []
 --- !u!1 &8763214481599273651
 GameObject:
   m_ObjectHideFlags: 0

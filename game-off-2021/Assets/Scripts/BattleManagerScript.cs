@@ -47,6 +47,7 @@ public class BattleManagerScript : MonoBehaviour
     public List<GameObject> _nextTurnOrder { get; set; }
     private int _currentActorIndex;
     private string _currentPlayerAction;
+    private bool _waitingForPlayerSelection;
     private GameObject _currentPlayerSelected;
     private IBattleAction _currentActorAction;
 
@@ -78,6 +79,8 @@ public class BattleManagerScript : MonoBehaviour
         _playerInputEvent = new PlayerEvent();
         _playerInputEvent.AddListener(PlayerEventHandler);
         _battleMenu.SetActive(false);
+
+        _waitingForPlayerSelection = false;
 
         _currentActor = null;
         _currentTargetActor = null;
@@ -239,7 +242,18 @@ public class BattleManagerScript : MonoBehaviour
         {
             if (_currentPlayerAction != null)
             {
-                PlayerSelectionUpdate();
+                if (!_waitingForPlayerSelection)
+                {
+                    GetScriptComponent<BattleMenuScript>(_battleMenu)._buttonResponseEvent.Invoke("allDisable");
+                    _waitingForPlayerSelection = true;
+                }
+
+                // True = cancel action/go back
+                if (PlayerSelectionUpdate())
+                {
+                    ResetPlayerActionState();
+                    return;
+                }
                 Dictionary<string, IBattleAction> possibleActionsDict = GetScriptComponent<BattleActorScript>(_currentActor)._battleActor.stats.actions;
                 if (possibleActionsDict.ContainsKey(_currentPlayerAction))
                 {
@@ -250,7 +264,6 @@ public class BattleManagerScript : MonoBehaviour
                         // TODO Allow selection/targeting of non-enemy objects
                         if (_enemyActorObjects.Contains(_currentPlayerSelected))
                         {
-                            Debug.Log("Selected and action");
                             _currentTargetActor = _enemyActorObjects.Find(x => x.GetInstanceID() == _currentPlayerSelected.GetInstanceID());
                             if (_currentTargetActor != null)
                             {
@@ -262,6 +275,11 @@ public class BattleManagerScript : MonoBehaviour
                                 Debug.Log("Selected actor not found in enemy list");
                             }
 
+                        }
+                        else // Illegal selection
+                        {
+                            ResetPlayerActionState();
+                            return;
                         }
                     }
                 }
@@ -293,8 +311,21 @@ public class BattleManagerScript : MonoBehaviour
         }
     }
 
-    private void PlayerSelectionUpdate()
+    private void ResetPlayerActionState()
     {
+        DeselectPlayerSelection();
+        _currentPlayerAction = null;
+        _waitingForPlayerSelection = false;
+        _currentPlayerSelected = null;
+        GetScriptComponent<BattleMenuScript>(_battleMenu)._buttonResponseEvent.Invoke("allEnable");
+
+    }
+
+    private bool PlayerSelectionUpdate()
+    {
+        // Sets _currentPlayerSelected directly
+        // Return value is to check for "empty click go back" functionality
+        // true = go back, false = no action/proper selection
         // TODO options variable to rebind keys
         // TODO add keyboard selection
         if (Input.GetMouseButtonDown(0))
@@ -309,14 +340,19 @@ public class BattleManagerScript : MonoBehaviour
                 {
                     DeselectPlayerSelection();
                     _currentPlayerSelected = collidedObject;
-                    Debug.Log($"Player selected: {_currentPlayerSelected.name}");
+                    // Debug.Log($"Player selected: {_currentPlayerSelected.name}");
 
                     BattleActorScript selectedScript = GetScriptComponent<BattleActorScript>(_currentPlayerSelected);
                     selectedScript.SetSelected(true);
-
+                    return false;
                 }
+                else
+                    return true;
             }
+            else
+                return true;
         }
+        return false;
     }
 
     private void DeselectPlayerSelection()
@@ -378,8 +414,7 @@ public class BattleManagerScript : MonoBehaviour
                 _currentActorIndex = 0;
             }
             _currentActor = _currentTurnOrder[_currentActorIndex];
-            _currentPlayerAction = null;
-            DeselectPlayerSelection();
+            ResetPlayerActionState();
             _currentState = BattleState.Input;
         }
 
