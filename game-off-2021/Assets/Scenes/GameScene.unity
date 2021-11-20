@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 96197991}
   - component: {fileID: 96197990}
   - component: {fileID: 96197989}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: BattleBackgroundSky
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -560,6 +560,22 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
       value: basicAttack
       objectReference: {fileID: 0}
+    - target: {fileID: 5758352843572533090, guid: 12b2e874562a99743afe4755012005f9, type: 3}
+      propertyPath: _battleCamera
+      value: 
+      objectReference: {fileID: 372333192}
+    - target: {fileID: 5758352843572533090, guid: 12b2e874562a99743afe4755012005f9, type: 3}
+      propertyPath: _ignoreSelectionList.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758352843572533090, guid: 12b2e874562a99743afe4755012005f9, type: 3}
+      propertyPath: _ignoreSelectionList.Array.data[0]
+      value: 
+      objectReference: {fileID: 937594055}
+    - target: {fileID: 5758352843572533090, guid: 12b2e874562a99743afe4755012005f9, type: 3}
+      propertyPath: _ignoreSelectionList.Array.data[1]
+      value: 
+      objectReference: {fileID: 96197988}
     - target: {fileID: 5758352843572533091, guid: 12b2e874562a99743afe4755012005f9, type: 3}
       propertyPath: m_Name
       value: BattleManagerPrefab
@@ -982,7 +998,7 @@ GameObject:
   - component: {fileID: 937594058}
   - component: {fileID: 937594057}
   - component: {fileID: 937594056}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: BattleBackgroundFloor
   m_TagString: Untagged
   m_Icon: {fileID: 0}

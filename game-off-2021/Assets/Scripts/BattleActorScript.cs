@@ -7,6 +7,16 @@ public class BattleActorScript : MonoBehaviour
     public GameObject battleActorGraphics;
 
     public IBattleActor _battleActor { get; set; }
+    private bool _isSelected;
 
-    // TODO some constructor which instantiates with a given battleactor
+    public BattleActorScript()
+    {
+        _isSelected = false;
+    }
+    public void SetSelected(bool value)
+    {
+        _isSelected = value;
+        var graphicsScript = (BattleActorGraphicScript)battleActorGraphics.GetComponent(typeof(BattleActorGraphicScript));
+        graphicsScript.UpdateSelected(value);
+    }
 }

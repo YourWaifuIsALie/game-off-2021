@@ -408,6 +408,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f7fa5d90651fe54588633415c9c2bce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mainObject: {fileID: 4943802144044756948}
   _healthDisplay: {fileID: 366310165932408804}
   _nameDisplay: {fileID: 3215754802350095819}
   _selectionCollider: {fileID: 5981325276037086970}

@@ -5,7 +5,8 @@ using UnityEngine;
 public class BattleActorGraphicScript : MonoBehaviour
 {
     // TODO figure out how GameObject graphics and animations work
-    // This script might be unnecessary
+    [SerializeField]
+    private GameObject _mainObject;
 
     [SerializeField]
     private TextMesh _healthDisplay;
@@ -36,5 +37,13 @@ public class BattleActorGraphicScript : MonoBehaviour
     {
         _rotationPoint.transform.LookAt(target);
         _rotationPoint.transform.rotation = Quaternion.Euler(0f, _rotationPoint.transform.rotation.eulerAngles.y + 180f, 0f);
+    }
+
+    public void UpdateSelected(bool selected)
+    {
+        if (selected)
+            _mainObject.GetComponent<Renderer>().material.color = Color.red;
+        else
+            _mainObject.GetComponent<Renderer>().material.color = Color.gray;
     }
 }
