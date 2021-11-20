@@ -6,6 +6,6 @@
     "longDescription": "Testing battle creation",
     "enemyStrings": [
         "testActor",
-        "glueActor"
+        "testActor"
     ]
 }

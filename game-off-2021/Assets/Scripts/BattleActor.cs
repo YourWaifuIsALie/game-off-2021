@@ -67,7 +67,7 @@ public class BattleActor
 public class BattleActorFactory
 {
     // TODO some fancy way to deserialize directly and safely
-    public static IBattleActor make(BattleActor actor, Dictionary<string, IBattleAction> allActions, Dictionary<string, BattleTag> allTags)
+    public static IBattleActor Make(BattleActor actor, Dictionary<string, IBattleAction> allActions, Dictionary<string, BattleTag> allTags)
     {
         foreach (var tagString in actor.tagStrings)
             actor.tags[tagString] = (allTags[tagString]);

@@ -13,6 +13,12 @@ public class BattleActorGraphicScript : MonoBehaviour
     [SerializeField]
     private TextMesh _nameDisplay;
 
+    [SerializeField]
+    private GameObject _selectionCollider;
+
+    [SerializeField]
+    private GameObject _rotationPoint;
+
     public bool isSelected { get; set; }
     public bool isTargeted { get; set; }
 
@@ -28,10 +34,7 @@ public class BattleActorGraphicScript : MonoBehaviour
 
     public void RotateTowards(Transform target)
     {
-        _healthDisplay.transform.LookAt(target);
-        _healthDisplay.transform.rotation = Quaternion.Euler(0f, _healthDisplay.transform.rotation.eulerAngles.y + 180f, 0f);
-
-        _nameDisplay.transform.LookAt(target);
-        _nameDisplay.transform.rotation = Quaternion.Euler(0f, _nameDisplay.transform.rotation.eulerAngles.y + 180f, 0f);
+        _rotationPoint.transform.LookAt(target);
+        _rotationPoint.transform.rotation = Quaternion.Euler(0f, _rotationPoint.transform.rotation.eulerAngles.y + 180f, 0f);
     }
 }

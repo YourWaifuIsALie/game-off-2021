@@ -21,7 +21,7 @@ public class BattleManagerScript : MonoBehaviour
     private Dictionary<string, BattleTag> _allTags;
     private Dictionary<string, IBattleEffect> _allEffects;
     private Dictionary<string, IBattleAction> _allActions;
-    private Dictionary<string, IBattleActor> _allActors;
+    private Dictionary<string, BattleActor> _allActors;
     private Dictionary<string, IAttackDamageEffect> _attackDamageEffects;
 
     private static string DATAPATH = Path.Combine(Application.streamingAssetsPath, "Data");
@@ -38,6 +38,7 @@ public class BattleManagerScript : MonoBehaviour
     public List<GameObject> _nextTurnOrder { get; set; }
     private int _currentActorIndex;
     private string _currentPlayerAction;
+    private GameObject _currentPlayerTarget;
     private IBattleAction _currentActorAction;
 
     public GameObject _currentActor { get; set; }
@@ -50,7 +51,7 @@ public class BattleManagerScript : MonoBehaviour
         _allTags = new Dictionary<string, BattleTag>();
         _allEffects = new Dictionary<string, IBattleEffect>();
         _allActions = new Dictionary<string, IBattleAction>();
-        _allActors = new Dictionary<string, IBattleActor>();
+        _allActors = new Dictionary<string, BattleActor>();
         _attackDamageEffects = new Dictionary<string, IAttackDamageEffect>();
         LoadTags();
         LoadEffects();
@@ -61,7 +62,9 @@ public class BattleManagerScript : MonoBehaviour
         _enemyActorObjects = new List<GameObject>();
         _deadPlayerActorObjects = new List<GameObject>();
         _deadEnemyActorObjects = new List<GameObject>();
-        _playerActorObjects.Add(CreateActorObject(_allActors["mainCharacter"]));
+
+        dynamic createdObject = BattleActorFactory.Make(_allActors["mainCharacter"], _allActions, _allTags);
+        _playerActorObjects.Add(CreateActorObject(createdObject));
 
         _playerInputEvent = new PlayerEvent();
         _playerInputEvent.AddListener(PlayerEventHandler);
@@ -112,7 +115,7 @@ public class BattleManagerScript : MonoBehaviour
             battleFilePath = battleFilePath + ".json";
         string filein = File.ReadAllText(Path.Combine(BATTLEPATH, battleFilePath));
         BattleSetup battleSetup = JsonConvert.DeserializeObject<BattleSetup>(filein);
-        BattleSetupFactory.make(battleSetup, _allActors);
+        BattleSetupFactory.Make(battleSetup, _allActors, _allActions, _allTags);
 
         foreach (IBattleActor enemyActor in battleSetup.enemies)
             _enemyActorObjects.Add(CreateActorObject(enemyActor));
@@ -233,7 +236,9 @@ public class BattleManagerScript : MonoBehaviour
                 {
                     _currentActorAction = possibleActionsDict[_currentPlayerAction];
 
-                    // TODO remove randomly deciding target
+                    // TODO mouse rays to select things
+                    // TODO keyboard to select things
+                    // _currentPlayerTarget
                     int randomIndex = _rng.Next(_enemyActorObjects.Count);
                     _currentTargetActor = _enemyActorObjects[randomIndex];
 
@@ -405,9 +410,8 @@ public class BattleManagerScript : MonoBehaviour
 
         foreach (var element in elementList)
         {
-            dynamic createdObject = BattleActorFactory.make(element, _allActions, _allTags);
-            if (createdObject is IBattleActor)
-                _allActors[createdObject.stats.name] = createdObject;
+            if (element is BattleActor)
+                _allActors[element.name] = element;
         }
     }
 
@@ -451,6 +455,7 @@ public class BattleManagerScript : MonoBehaviour
 
     }
 
+    /*
     private void RunUnitTests()
     {
         //TODO figure out actual unit testing mechanism
@@ -486,4 +491,5 @@ public class BattleManagerScript : MonoBehaviour
         actorTarget = new List<IBattleActor> { _allActors["positiveActor"] };
         actorOrigin.stats.actions["logicTest2"].Act(actorOrigin, actorTarget);
     }
+    */
 }
