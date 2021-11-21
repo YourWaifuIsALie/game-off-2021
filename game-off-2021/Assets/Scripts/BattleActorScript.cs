@@ -19,4 +19,14 @@ public class BattleActorScript : MonoBehaviour
         var graphicsScript = (BattleActorGraphicScript)battleActorGraphics.GetComponent(typeof(BattleActorGraphicScript));
         graphicsScript.UpdateSelected(value);
     }
+    public void PlayAnimation(string value)
+    {
+        var graphicsScript = (BattleActorGraphicScript)battleActorGraphics.GetComponent(typeof(BattleActorGraphicScript));
+        graphicsScript.PlayAnimation(value);
+    }
+    public void SetDead()
+    {
+        var graphicsScript = (BattleActorGraphicScript)battleActorGraphics.GetComponent(typeof(BattleActorGraphicScript));
+        graphicsScript.SetTextColor(Color.gray);
+    }
 }

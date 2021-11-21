@@ -20,8 +20,22 @@ public class BattleActorGraphicScript : MonoBehaviour
     [SerializeField]
     private GameObject _rotationPoint;
 
+    public bool isFlipped { get; set; }
     public bool isSelected { get; set; }
     public bool isTargeted { get; set; }
+
+    public BattleActorGraphicScript()
+    {
+        isFlipped = false;
+    }
+
+    public void Update()
+    {
+        if (isFlipped)
+            _mainObject.GetComponent<SpriteRenderer>().flipX = true;
+        else
+            _mainObject.GetComponent<SpriteRenderer>().flipX = false;
+    }
 
     public void UpdateHealth(int current, int max)
     {
@@ -44,6 +58,21 @@ public class BattleActorGraphicScript : MonoBehaviour
         if (selected)
             _mainObject.GetComponent<Renderer>().material.color = Color.red;
         else
-            _mainObject.GetComponent<Renderer>().material.color = Color.gray;
+            _mainObject.GetComponent<Renderer>().material.color = Color.white;
+    }
+    public void PlayAnimation(string value)
+    {
+        ((Animator)_mainObject.GetComponent(typeof(Animator))).SetTrigger(value);
+    }
+
+    public void SetGraphics(Sprite sprite, RuntimeAnimatorController animation)
+    {
+        _mainObject.GetComponent<SpriteRenderer>().sprite = sprite;
+        _mainObject.GetComponent<Animator>().runtimeAnimatorController = animation;
+    }
+    public void SetTextColor(Color color)
+    {
+        _healthDisplay.color = color;
+        _nameDisplay.color = color;
     }
 }

@@ -84,8 +84,10 @@ public class BattleMenuScript : MonoBehaviour
     {
         foreach (var actorObject in actorObjects)
         {
-            Vector3 inTheGround = new Vector3(actorObject.transform.position.x, 0, actorObject.transform.position.z);
-            actorObject.transform.position = inTheGround;
+            // Vector3 inTheGround = new Vector3(actorObject.transform.position.x, 0, actorObject.transform.position.z);
+            // actorObject.transform.position = inTheGround;
+            var actorScript = (BattleActorScript)actorObject.GetComponent(typeof(BattleActorScript));
+            actorScript.SetDead();
         }
     }
 

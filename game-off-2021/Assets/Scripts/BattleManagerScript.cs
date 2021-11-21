@@ -23,6 +23,13 @@ public class BattleManagerScript : MonoBehaviour
     [SerializeField]
     private List<GameObject> _ignoreSelectionList;
 
+    // TODO proper loading of arbitrary assets
+    [SerializeField]
+    private List<Sprite> _allSprites;
+    [SerializeField]
+    private List<RuntimeAnimatorController> _allAnimators;
+
+
     public PlayerEvent _playerInputEvent { get; set; }
 
     private System.Random _rng;
@@ -74,7 +81,7 @@ public class BattleManagerScript : MonoBehaviour
         _deadEnemyActorObjects = new List<GameObject>();
 
         dynamic createdObject = BattleActorFactory.Make(_allActors["mainCharacter"], _allActions, _allTags);
-        _playerActorObjects.Add(CreateActorObject(createdObject));
+        _playerActorObjects.Add(CreateActorObject(createdObject, false));
 
         _playerInputEvent = new PlayerEvent();
         _playerInputEvent.AddListener(PlayerEventHandler);
@@ -130,7 +137,7 @@ public class BattleManagerScript : MonoBehaviour
         BattleSetupFactory.Make(battleSetup, _allActors, _allActions, _allTags);
 
         foreach (IBattleActor enemyActor in battleSetup.enemies)
-            _enemyActorObjects.Add(CreateActorObject(enemyActor));
+            _enemyActorObjects.Add(CreateActorObject(enemyActor, true));
 
         SetupActorLocations();
         _nextTurnOrder = _currentTurnOrder = DetermineTurnOrder();
@@ -145,12 +152,15 @@ public class BattleManagerScript : MonoBehaviour
         _currentState = BattleState.Start;
     }
 
-    private GameObject CreateActorObject(IBattleActor actor)
+    private GameObject CreateActorObject(IBattleActor actor, bool isFlipped)
     {
         GameObject obj = (GameObject)Instantiate(_actorPrefab, new Vector3(0, 0, 0), Quaternion.identity);
         var script = GetScriptComponent<BattleActorScript>(obj);
         script._battleActor = actor;
         obj.name = actor.stats.name;
+        var graphicScript = (BattleActorGraphicScript)script.battleActorGraphics.GetComponent(typeof(BattleActorGraphicScript));
+        graphicScript.SetGraphics(_allSprites[0], _allAnimators[0]);
+        graphicScript.isFlipped = isFlipped;
         return obj;
     }
 
@@ -374,9 +384,11 @@ public class BattleManagerScript : MonoBehaviour
     public IEnumerator ArtificialSlowdown(int seconds)
     {
         Debug.Log($"[{_currentActor.name}] is [{_currentActorAction.stats.displayName}ing] [{_currentTargetActor.name}]");
-
-        var origin = GetScriptComponent<BattleActorScript>(_currentActor)._battleActor;
+        BattleActorScript originActor = GetScriptComponent<BattleActorScript>(_currentActor);
+        var origin = originActor._battleActor;
         var target = GetScriptComponent<BattleActorScript>(_currentTargetActor)._battleActor;
+
+        originActor.PlayAnimation("Attack");
         _currentActorAction.Act(origin, new List<IBattleActor> { target });
         yield return new WaitForSeconds(seconds);
         _currentState = BattleState.Cleanup;
@@ -393,7 +405,6 @@ public class BattleManagerScript : MonoBehaviour
         bool isBattleOver = false;
         CheckAndRemoveDeadObjects(_playerActorObjects, _deadPlayerActorObjects);
         CheckAndRemoveDeadObjects(_enemyActorObjects, _deadEnemyActorObjects);
-
         if (_playerActorObjects.Count == 0 || _enemyActorObjects.Count == 0)
             isBattleOver = true;
 
@@ -406,6 +417,7 @@ public class BattleManagerScript : MonoBehaviour
             // TODO compare planned turn order vs. next turn order
             // TODO graphical event system for recalculated turn order animation?
             _nextTurnOrder = DetermineTurnOrder();
+            _currentTurnOrder = _nextTurnOrder; // TODO to account for dead actors
 
             _currentActorIndex += 1;
             if (_currentActorIndex >= _currentTurnOrder.Count)
@@ -424,15 +436,20 @@ public class BattleManagerScript : MonoBehaviour
     {
         foreach (var actorObject in livingList)
         {
-            var actor = GetScriptComponent<BattleActorScript>(actorObject)._battleActor;
+            var actorScript = GetScriptComponent<BattleActorScript>(actorObject);
+            var actor = actorScript._battleActor;
             if (!actor.stats.CheckAlive())
+            {
+                actorScript.PlayAnimation("Death");
                 deadList.Add(actorObject);
+            }
         }
         livingList.RemoveAll(x => GetScriptComponent<BattleActorScript>(x)._battleActor.stats.isAlive == false);
     }
 
     private void EndBattle()
     {
+        ResetPlayerActionState();
         if (_playerActorObjects.Count == 0)
         {
             Debug.Log("YOU LOSE");
