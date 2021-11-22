@@ -1,7 +1,8 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class BattleMenuScript : MonoBehaviour
 {
@@ -12,10 +13,20 @@ public class BattleMenuScript : MonoBehaviour
     private Text _turnOrderDisplay;
 
     [SerializeField]
-    private GameObject _camera;
+    private Camera _camera;
 
     [SerializeField]
     private Button _attackButton;
+
+    [SerializeField]
+    private LayerMask _descriptionLayer;
+
+    [SerializeField]
+    private CanvasRenderer _hoverPanel;
+
+    // Global namespace please
+    private Dictionary<string, Type> TAGTYPE = new Dictionary<string, Type> { { "BattleActor", typeof(BattleActorScript) } };
+    private Dictionary<string, string> BUTTONDESCRIPTION = new Dictionary<string, string> { { "AttackButton", "Hit one target" }, { "Skill", "Select a skill" } };
 
     public PlayerEvent _buttonResponseEvent { get; set; }
 
@@ -23,6 +34,7 @@ public class BattleMenuScript : MonoBehaviour
     {
         _buttonResponseEvent = new PlayerEvent();
         _buttonResponseEvent.AddListener(PlayerEventHandler);
+        _hoverPanel.gameObject.SetActive(false);
     }
 
     private void PlayerEventHandler(string eventValue)
@@ -42,11 +54,66 @@ public class BattleMenuScript : MonoBehaviour
 
     public void Update()
     {
+        HoverDisplay();
         UpdateTurnOrderDisplay();
         UpdateHealthBars(_battleManager._playerActorObjects);
         UpdateHealthBars(_battleManager._enemyActorObjects);
         UpdateDead(_battleManager._deadPlayerActorObjects);
         UpdateDead(_battleManager._deadEnemyActorObjects);
+    }
+
+    private void HoverDisplay()
+    {
+        Vector3 mousePosition = Input.mousePosition;
+        Ray mouseRay = _camera.ScreenPointToRay(mousePosition);
+        RaycastHit rayCollisionResult;
+        var panelText = (Text)_hoverPanel.GetComponentInChildren<Text>();
+        if (Physics.Raycast(mouseRay, out rayCollisionResult, 10000f, _descriptionLayer))
+        {
+            _hoverPanel.gameObject.SetActive(true);
+            // Relying on anchor point for placement. Probably should have some screen edge detection
+            _hoverPanel.transform.position = mousePosition;
+            GameObject collidedObject = rayCollisionResult.transform.gameObject.transform.root.gameObject;
+            var script = (BattleActorScript)collidedObject.GetComponent(typeof(BattleActorScript));
+            if (!panelText)
+            {
+                Debug.Log("No text object on description panel");
+                return;
+            }
+
+            switch (collidedObject.tag)
+            {
+                case "BattleActor":
+                    panelText.text = script._battleActor.stats.longDescription;
+                    break;
+                case "Button":
+                    panelText.text = BUTTONDESCRIPTION[collidedObject.name];
+                    break;
+                default:
+                    _hoverPanel.gameObject.SetActive(false);
+                    break;
+            }
+        }
+        // UI elements can't be physics raycasted against
+        else
+        {
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                var collidedObject = EventSystem.current.currentSelectedGameObject;
+                switch (collidedObject.tag)
+                {
+                    case "Button":
+                        panelText.text = BUTTONDESCRIPTION[collidedObject.name];
+                        break;
+                    default:
+                        _hoverPanel.gameObject.SetActive(false);
+                        break;
+                }
+            }
+            else
+                _hoverPanel.gameObject.SetActive(false);
+        }
+
     }
 
     // TODO graphical event system for recalculated turn order animation?

@@ -49,8 +49,14 @@ public class BattleActorGraphicScript : MonoBehaviour
 
     public void RotateTowards(Transform target)
     {
+        // Simple rotation towards camera
         _rotationPoint.transform.LookAt(target);
         _rotationPoint.transform.rotation = Quaternion.Euler(0f, _rotationPoint.transform.rotation.eulerAngles.y + 180f, 0f);
+
+        // Partial rotation towards camera
+        // Vector3 targetDirection = _rotationPoint.transform.position - target.transform.position;
+        // Quaternion rotationValue = Quaternion.Lerp(Quaternion.identity, Quaternion.LookRotation(targetDirection, Vector3.up), 0.2f);
+        // _rotationPoint.transform.rotation = rotationValue;
     }
 
     public void UpdateSelected(bool selected)
