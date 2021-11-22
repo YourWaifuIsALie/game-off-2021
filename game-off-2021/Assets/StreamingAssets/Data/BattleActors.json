@@ -114,5 +114,25 @@
         "actionStrings": [
             "basicAttack"
         ]
+    },
+    {
+        "name": "weakling",
+        "displayName": "Weakling",
+        "type": "BasicActor",
+        "shortDescription": "Dies quickly",
+        "longDescription": "A poor soul existing only to die",
+        "maxHealth": 1,
+        "maxMana": 10,
+        "maxAttack": 0,
+        "maxDefense": 0,
+        "maxSpeed": 1,
+        "level": 0,
+        "tagStrings": [
+            "feeble",
+            "unlucky"
+        ],
+        "actionStrings": [
+            "basicAttack"
+        ]
     }
 ]

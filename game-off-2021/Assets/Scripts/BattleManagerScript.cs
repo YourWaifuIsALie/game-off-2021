@@ -31,6 +31,7 @@ public class BattleManagerScript : MonoBehaviour
 
 
     public PlayerEvent _playerInputEvent { get; set; }
+    public PlayerEvent _animationEvent { get; set; }
 
     private System.Random _rng;
 
@@ -43,7 +44,7 @@ public class BattleManagerScript : MonoBehaviour
     private static string DATAPATH = Path.Combine(Application.streamingAssetsPath, "Data");
     private static string BATTLEPATH = Path.Combine(DATAPATH, "Battles");
 
-    enum BattleState { Inactive, Start, Input, Action, Waiting, Cleanup }
+    enum BattleState { Inactive, Start, Input, Action, Waiting, Cleanup, End }
     private BattleState _currentState;
 
     public List<GameObject> _playerActorObjects { get; set; }
@@ -53,8 +54,8 @@ public class BattleManagerScript : MonoBehaviour
     public List<GameObject> _currentTurnOrder { get; set; }
     public List<GameObject> _nextTurnOrder { get; set; }
     private int _currentActorIndex;
-    private string _currentPlayerAction;
-    private bool _waitingForPlayerSelection;
+    public string _currentPlayerAction { get; set; }
+    public bool _waitingForPlayerSelection { get; set; }
     private GameObject _currentPlayerSelected;
     private IBattleAction _currentActorAction;
 
@@ -85,6 +86,9 @@ public class BattleManagerScript : MonoBehaviour
 
         _playerInputEvent = new PlayerEvent();
         _playerInputEvent.AddListener(PlayerEventHandler);
+        _animationEvent = new PlayerEvent();
+        _animationEvent.AddListener(AnimationEventHandler);
+
         _battleMenu.SetActive(false);
 
         _waitingForPlayerSelection = false;
@@ -100,6 +104,19 @@ public class BattleManagerScript : MonoBehaviour
         _currentPlayerAction = eventValue;
         // Debug.Log($"Player event received: {eventValue}");
     }
+    private void AnimationEventHandler(string eventValue)
+    {
+        switch (eventValue)
+        {
+            case "Hurt":
+                BattleActorScript actor = GetScriptComponent<BattleActorScript>(_currentTargetActor);
+                actor.PlayAnimation("Hurt");
+                break;
+            default:
+                break;
+        }
+    }
+
 
     public void Update()
     {
@@ -108,7 +125,7 @@ public class BattleManagerScript : MonoBehaviour
             case BattleState.Inactive:
                 break;
             case BattleState.Start:
-                TransitionIn();
+                StartBattle();
                 break;
             case BattleState.Input:
                 GetInput();
@@ -121,6 +138,9 @@ public class BattleManagerScript : MonoBehaviour
             case BattleState.Cleanup:
                 SettleTurn();
                 break;
+            case BattleState.End:
+                LoadNextBattle();
+                break;
             default:
                 break;
         }
@@ -129,6 +149,7 @@ public class BattleManagerScript : MonoBehaviour
     public void SetupBattle(string inputPath)
     {
         _enemyActorObjects = new List<GameObject>();
+        _deadEnemyActorObjects = new List<GameObject>();
         string battleFilePath = inputPath;
         if (!Path.HasExtension(battleFilePath))
             battleFilePath = battleFilePath + ".json";
@@ -152,12 +173,27 @@ public class BattleManagerScript : MonoBehaviour
         _currentState = BattleState.Start;
     }
 
+    private void LoadNextBattle()
+    {
+        if (_playerActorObjects.Count != 0)
+        {
+            foreach (GameObject obj in _enemyActorObjects)
+                Destroy(obj);
+            foreach (GameObject obj in _deadEnemyActorObjects)
+                Destroy(obj);
+            SetupBattle("TestBattle1");
+        }
+        else
+            _battleMenu.SetActive(false);
+    }
+
     private GameObject CreateActorObject(IBattleActor actor, bool isFlipped)
     {
         GameObject obj = (GameObject)Instantiate(_actorPrefab, new Vector3(0, 0, 0), Quaternion.identity);
         var script = GetScriptComponent<BattleActorScript>(obj);
         script._battleActor = actor;
         obj.name = actor.stats.name;
+        script._battleManager = this;
         var graphicScript = (BattleActorGraphicScript)script.battleActorGraphics.GetComponent(typeof(BattleActorGraphicScript));
         graphicScript.SetGraphics(_allSprites[0], _allAnimators[0]);
         graphicScript.isFlipped = isFlipped;
@@ -209,10 +245,10 @@ public class BattleManagerScript : MonoBehaviour
         Vector3[] playLocations = new Vector3[] {
             new Vector3(-15, 2, 15),
             new Vector3(-15, 2, 5),
-            new Vector3(-15, 2, 30),
+            new Vector3(-10, 2, 20),
             new Vector3(-25, 2, 15),
             new Vector3(-25, 2, 5),
-            new Vector3(-25, 2, 30)
+            new Vector3(-20, 2, 20)
         };
 
         var i = 0;
@@ -226,10 +262,10 @@ public class BattleManagerScript : MonoBehaviour
         Vector3[] enemyLocations = new Vector3[] {
             new Vector3(15, 2, 15),
             new Vector3(15, 2, 5),
-            new Vector3(15, 2, 30),
+            new Vector3(10, 2, 20),
             new Vector3(25, 2, 15),
             new Vector3(25, 2, 5),
-            new Vector3(25, 2, 30)
+            new Vector3(20, 2, 20)
         };
 
         i = 0;
@@ -240,10 +276,28 @@ public class BattleManagerScript : MonoBehaviour
         }
     }
 
-    private void TransitionIn()
+    private IEnumerator TransitionIn()
     {
         // TODO some fancy animation
+        foreach (var obj in _playerActorObjects)
+        {
+            BattleActorScript battleActor = GetScriptComponent<BattleActorScript>(obj);
+            battleActor.PlayAnimation("Stop");
+        }
+        yield return new WaitForSeconds(0.5f);
         _currentState = BattleState.Input;
+    }
+
+    private IEnumerator TransitionOut()
+    {
+        // TODO some fancy animation
+        foreach (var obj in _playerActorObjects)
+        {
+            BattleActorScript battleActor = GetScriptComponent<BattleActorScript>(obj);
+            battleActor.PlayAnimation("Run");
+        }
+        yield return new WaitForSeconds(2);
+        _currentState = BattleState.End;
     }
 
     private void GetInput()
@@ -447,6 +501,13 @@ public class BattleManagerScript : MonoBehaviour
         livingList.RemoveAll(x => GetScriptComponent<BattleActorScript>(x)._battleActor.stats.isAlive == false);
     }
 
+    private void StartBattle()
+    {
+        Debug.Log("BATTLE START");
+        StartCoroutine(TransitionIn());
+        _currentState = BattleState.Waiting;
+    }
+
     private void EndBattle()
     {
         ResetPlayerActionState();
@@ -458,8 +519,8 @@ public class BattleManagerScript : MonoBehaviour
         {
             Debug.Log("VICTORY");
         }
-        _battleMenu.SetActive(false);
-        _currentState = BattleState.Inactive;
+        StartCoroutine(TransitionOut());
+        _currentState = BattleState.Waiting;
     }
 
     // TODO generic loader + factory setup?

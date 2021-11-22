@@ -1,0 +1,10 @@
+{
+    "name": "testBattle3",
+    "displayName": "Test Battle 3",
+    "type": "fixedBattle",
+    "shortDescription": "Testing battle creation",
+    "longDescription": "Testing battle creation",
+    "enemyStrings": [
+        "weakling"
+    ]
+}

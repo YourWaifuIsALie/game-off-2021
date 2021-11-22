@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class BattleActorScript : MonoBehaviour
 {
+    [SerializeField]
+    public BattleManagerScript _battleManager;
+
     public GameObject battleActorGraphics;
 
     public IBattleActor _battleActor { get; set; }

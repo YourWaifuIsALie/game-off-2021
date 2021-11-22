@@ -29,6 +29,7 @@ public class BattleMenuScript : MonoBehaviour
     private Dictionary<string, string> BUTTONDESCRIPTION = new Dictionary<string, string> { { "AttackButton", "Hit one target" }, { "Skill", "Select a skill" } };
 
     public PlayerEvent _buttonResponseEvent { get; set; }
+    public PlayerEvent _animationEvent { get; set; }
 
     public void Start()
     {
@@ -64,6 +65,7 @@ public class BattleMenuScript : MonoBehaviour
 
     private void HoverDisplay()
     {
+        // TODO anchor hover display on object so play can mouse over to get further description on keywords
         Vector3 mousePosition = Input.mousePosition;
         Ray mouseRay = _camera.ScreenPointToRay(mousePosition);
         RaycastHit rayCollisionResult;
@@ -84,10 +86,17 @@ public class BattleMenuScript : MonoBehaviour
             switch (collidedObject.tag)
             {
                 case "BattleActor":
-                    panelText.text = script._battleActor.stats.longDescription;
-                    break;
-                case "Button":
-                    panelText.text = BUTTONDESCRIPTION[collidedObject.name];
+                    var stringBuild = "";
+                    if (script._battleActor.stats.tags.Count > 0)
+                    {
+                        foreach (KeyValuePair<string, BattleTag> element in script._battleActor.stats.tags)
+                            stringBuild += $"[{element.Value.displayName}] ";
+                        stringBuild += "\n";
+                    }
+                    stringBuild += $"ATK: {script._battleActor.stats.currentAttack} | DEF: {script._battleActor.stats.currentDefense}";
+                    if (_battleManager._currentPlayerAction == null)
+                        stringBuild += $"\n---\n{script._battleActor.stats.longDescription}";
+                    panelText.text = stringBuild;
                     break;
                 default:
                     _hoverPanel.gameObject.SetActive(false);
@@ -97,13 +106,23 @@ public class BattleMenuScript : MonoBehaviour
         // UI elements can't be physics raycasted against
         else
         {
-            if (EventSystem.current.IsPointerOverGameObject())
+            PointerEventData eventData = new PointerEventData(EventSystem.current);
+            eventData.position = Input.mousePosition;
+            List<RaycastResult> interfaceRays = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, interfaceRays);
+            if (interfaceRays.Count == 1)
             {
-                var collidedObject = EventSystem.current.currentSelectedGameObject;
-                switch (collidedObject.tag)
+                _hoverPanel.gameObject.SetActive(true);
+                _hoverPanel.transform.position = Input.mousePosition;
+                RaycastResult interfaceRay = interfaceRays[0];
+
+                switch (interfaceRay.gameObject.tag)
                 {
                     case "Button":
-                        panelText.text = BUTTONDESCRIPTION[collidedObject.name];
+                        panelText.text = BUTTONDESCRIPTION[interfaceRay.gameObject.name];
+                        break;
+                    case "TurnOrder":
+                        panelText.text = $"The unit turn order. Current unit's turn is bolded";
                         break;
                     default:
                         _hoverPanel.gameObject.SetActive(false);

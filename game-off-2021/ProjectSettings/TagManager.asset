@@ -6,6 +6,7 @@ TagManager:
   tags:
   - BattleActor
   - Button
+  - TurnOrder
   layers:
   - Default
   - TransparentFX

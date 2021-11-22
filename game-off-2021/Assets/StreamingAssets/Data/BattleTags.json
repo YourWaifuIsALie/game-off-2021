@@ -40,5 +40,19 @@
         "type": "positive",
         "shortDescription": "Testing tag",
         "longDescription": "Testing tag"
+    },
+    {
+        "name": "feeble",
+        "displayName": "Feeble",
+        "type": "feeble",
+        "shortDescription": "Testing tag",
+        "longDescription": "Testing tag"
+    },
+    {
+        "name": "unlucky",
+        "displayName": "Unlucky",
+        "type": "unlucky",
+        "shortDescription": "Testing tag",
+        "longDescription": "Testing tag"
     }
 ]
