@@ -2,7 +2,10 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -12,7 +15,13 @@ public class BattleManagerScript : MonoBehaviour
     private GameObject _actorPrefab;
 
     [SerializeField]
+    private GameObject _damagePopupPrefab;
+
+    [SerializeField]
     private GameObject _battleMenu;
+
+    [SerializeField]
+    private GameObject _defeatMenu;
 
     [SerializeField]
     private Camera _battleCamera;
@@ -55,9 +64,11 @@ public class BattleManagerScript : MonoBehaviour
     public List<GameObject> _nextTurnOrder { get; set; }
     private int _currentActorIndex;
     public string _currentPlayerAction { get; set; }
+    public IBattleAction _currentSelectedAction { get; set; }
     public bool _waitingForPlayerSelection { get; set; }
     private GameObject _currentPlayerSelected;
     private IBattleAction _currentActorAction;
+    private string _currentBattle;
 
     public GameObject _currentActor { get; set; }
     public GameObject _currentTargetActor { get; set; }
@@ -81,17 +92,17 @@ public class BattleManagerScript : MonoBehaviour
         _deadPlayerActorObjects = new List<GameObject>();
         _deadEnemyActorObjects = new List<GameObject>();
 
-        dynamic createdObject = BattleActorFactory.Make(_allActors["mainCharacter"], _allActions, _allTags);
-        _playerActorObjects.Add(CreateActorObject(createdObject, false));
-
         _playerInputEvent = new PlayerEvent();
         _playerInputEvent.AddListener(PlayerEventHandler);
         _animationEvent = new PlayerEvent();
         _animationEvent.AddListener(AnimationEventHandler);
 
         _battleMenu.SetActive(false);
+        _defeatMenu.SetActive(false);
 
-        _waitingForPlayerSelection = false;
+        _waitingForPlayerSelection = true;
+        _currentPlayerAction = null;
+        _currentSelectedAction = null;
 
         _currentActor = null;
         _currentTargetActor = null;
@@ -148,8 +159,31 @@ public class BattleManagerScript : MonoBehaviour
 
     public void SetupBattle(string inputPath)
     {
+        // Cull all objects for safety
+        if (_enemyActorObjects != null && _enemyActorObjects.Count > 0)
+            foreach (GameObject obj in _enemyActorObjects)
+                Destroy(obj);
+        if (_deadEnemyActorObjects != null && _deadEnemyActorObjects.Count > 0)
+            foreach (GameObject obj in _deadEnemyActorObjects)
+                Destroy(obj);
+        if (_deadPlayerActorObjects != null && _deadPlayerActorObjects.Count > 0)
+            foreach (GameObject obj in _deadPlayerActorObjects)
+                Destroy(obj);
+        if (_playerActorObjects != null && _playerActorObjects.Count > 0)
+            foreach (GameObject obj in _playerActorObjects)
+                Destroy(obj);
+
         _enemyActorObjects = new List<GameObject>();
         _deadEnemyActorObjects = new List<GameObject>();
+        _deadPlayerActorObjects = new List<GameObject>();
+        _playerActorObjects = new List<GameObject>();
+
+        // Recreate player everytime to avoid issues
+        dynamic createdObject = BattleActorFactory.Make(_allActors["mainCharacter"], _allActions, _allTags);
+        _playerActorObjects.Add(CreateActorObject(createdObject, false));
+
+        // Load battle file
+        _currentBattle = inputPath;
         string battleFilePath = inputPath;
         if (!Path.HasExtension(battleFilePath))
             battleFilePath = battleFilePath + ".json";
@@ -165,26 +199,34 @@ public class BattleManagerScript : MonoBehaviour
         _currentActorIndex = 0;
         _currentActor = _currentTurnOrder[_currentActorIndex];
 
+        // Change skill buttons
+        Dictionary<string, IBattleAction> possibleActionsDict = GetScriptComponent<BattleActorScript>(_playerActorObjects[0])._battleActor.stats.actions;
+        GetScriptComponent<BattleMenuScript>(_battleMenu).GenerateSkillButtons(possibleActionsDict.Values.ToList());
+
         _battleMenu.SetActive(true);
 
         Debug.Log("Starting battle: " + battleSetup.displayName + " (" + battleSetup.type + ")");
-        //Debug.Log(JsonConvert.SerializeObject(battleSetup.enemies));
-
         _currentState = BattleState.Start;
     }
 
     private void LoadNextBattle()
     {
+        // Victory
         if (_playerActorObjects.Count != 0)
         {
-            foreach (GameObject obj in _enemyActorObjects)
-                Destroy(obj);
-            foreach (GameObject obj in _deadEnemyActorObjects)
-                Destroy(obj);
             SetupBattle("TestBattle1");
         }
         else
+        {
             _battleMenu.SetActive(false);
+            _defeatMenu.SetActive(true);
+        }
+
+    }
+
+    public void RetryBattle()
+    {
+        SetupBattle(_currentBattle);
     }
 
     private GameObject CreateActorObject(IBattleActor actor, bool isFlipped)
@@ -302,27 +344,32 @@ public class BattleManagerScript : MonoBehaviour
 
     private void GetInput()
     {
+        // True = cancel action/go back
+        // Reset selection if player clicks away
+        if (PlayerSelectionUpdate())
+        {
+            ResetPlayerActionState();
+            DeselectPlayerSelection();
+            return;
+        }
+
+        // If player has selected an action, disable buttons
+        if (_waitingForPlayerSelection && _currentPlayerAction != null)
+        {
+            GetScriptComponent<BattleMenuScript>(_battleMenu)._buttonResponseEvent.Invoke("allDisable");
+            _waitingForPlayerSelection = false;
+        }
+
+        // Player turn
         if (_playerActorObjects.Contains(_currentActor))
         {
             if (_currentPlayerAction != null)
             {
-                if (!_waitingForPlayerSelection)
-                {
-                    GetScriptComponent<BattleMenuScript>(_battleMenu)._buttonResponseEvent.Invoke("allDisable");
-                    _waitingForPlayerSelection = true;
-                }
-
-                // True = cancel action/go back
-                if (PlayerSelectionUpdate())
-                {
-                    ResetPlayerActionState();
-                    return;
-                }
                 Dictionary<string, IBattleAction> possibleActionsDict = GetScriptComponent<BattleActorScript>(_currentActor)._battleActor.stats.actions;
                 if (possibleActionsDict.ContainsKey(_currentPlayerAction))
                 {
                     _currentActorAction = possibleActionsDict[_currentPlayerAction];
-
+                    _currentSelectedAction = _currentActorAction;
                     if (_currentPlayerSelected != null)
                     {
                         // TODO Allow selection/targeting of non-enemy objects
@@ -334,15 +381,22 @@ public class BattleManagerScript : MonoBehaviour
                                 _currentPlayerAction = null;
                                 _currentState = BattleState.Action;
                             }
-                            else
-                            {
-                                Debug.Log("Selected actor not found in enemy list");
-                            }
 
                         }
-                        else // Illegal selection
+                        else if (_playerActorObjects.Contains(_currentPlayerSelected))
+                        {
+                            // Repeated code but whatever we're in quick and dirty season
+                            _currentTargetActor = _playerActorObjects.Find(x => x.GetInstanceID() == _currentPlayerSelected.GetInstanceID());
+                            if (_currentTargetActor != null)
+                            {
+                                _currentPlayerAction = null;
+                                _currentState = BattleState.Action;
+                            }
+                        }
+                        else
                         {
                             ResetPlayerActionState();
+                            DeselectPlayerSelection();
                             return;
                         }
                     }
@@ -377,10 +431,9 @@ public class BattleManagerScript : MonoBehaviour
 
     private void ResetPlayerActionState()
     {
-        DeselectPlayerSelection();
         _currentPlayerAction = null;
-        _waitingForPlayerSelection = false;
-        _currentPlayerSelected = null;
+        _currentSelectedAction = null;
+        _waitingForPlayerSelection = true;
         GetScriptComponent<BattleMenuScript>(_battleMenu)._buttonResponseEvent.Invoke("allEnable");
 
     }
@@ -411,7 +464,23 @@ public class BattleManagerScript : MonoBehaviour
                     return false;
                 }
                 else
-                    return true;
+                {
+                    // Did player click UI element?
+                    PointerEventData eventData = new PointerEventData(EventSystem.current);
+                    eventData.position = Input.mousePosition;
+                    List<RaycastResult> interfaceRays = new List<RaycastResult>();
+                    EventSystem.current.RaycastAll(eventData, interfaceRays);
+                    if (interfaceRays.Count > 0)
+                    {
+                        // Debug.Log($"False: {interfaceRays.Count}");
+                        return false;
+                    }
+                    else
+                    {
+                        // Debug.Log($"True: {interfaceRays.Count}");
+                        return true;
+                    }
+                }
             }
             else
                 return true;
@@ -431,25 +500,33 @@ public class BattleManagerScript : MonoBehaviour
 
     private void ExecuteTurn()
     {
-        StartCoroutine(ArtificialSlowdown(1));
+        StartCoroutine(ArtificialSlowdown(1.5f));
         _currentState = BattleState.Waiting;
     }
 
-    public IEnumerator ArtificialSlowdown(int seconds)
+    public IEnumerator ArtificialSlowdown(float seconds)
     {
-        Debug.Log($"[{_currentActor.name}] is [{_currentActorAction.stats.displayName}ing] [{_currentTargetActor.name}]");
+        // Debug.Log($"[{_currentActor.name}] is [{_currentActorAction.stats.displayName}ing] [{_currentTargetActor.name}]");
         BattleActorScript originActor = GetScriptComponent<BattleActorScript>(_currentActor);
         var origin = originActor._battleActor;
         var target = GetScriptComponent<BattleActorScript>(_currentTargetActor)._battleActor;
 
         originActor.PlayAnimation("Attack");
-        _currentActorAction.Act(origin, new List<IBattleActor> { target });
+        var damage = _currentActorAction.Act(origin, new List<IBattleActor> { target });
         yield return new WaitForSeconds(seconds);
+
+        // Popup text here instead of via animation event because we're laaaazy
+        Vector3 textPosition = _currentTargetActor.transform.position;
+        textPosition.y += 2;
+        DamagePopupScript temp = Instantiate(_damagePopupPrefab, textPosition, Quaternion.identity).GetComponent<DamagePopupScript>();
+        temp.SetDamage(damage);
+
         _currentState = BattleState.Cleanup;
     }
 
     public T GetScriptComponent<T>(GameObject obj) where T : MonoBehaviour
     {
+        // Mostly unnecessary because `T variable = obj.GetComponent<T>()` is pretty short
         return (T)obj.GetComponent(typeof(T));
     }
 
@@ -473,6 +550,9 @@ public class BattleManagerScript : MonoBehaviour
             _nextTurnOrder = DetermineTurnOrder();
             _currentTurnOrder = _nextTurnOrder; // TODO to account for dead actors
 
+            if (_playerActorObjects.Contains(_currentActor))
+                ResetPlayerActionState();
+
             _currentActorIndex += 1;
             if (_currentActorIndex >= _currentTurnOrder.Count)
             {
@@ -480,7 +560,6 @@ public class BattleManagerScript : MonoBehaviour
                 _currentActorIndex = 0;
             }
             _currentActor = _currentTurnOrder[_currentActorIndex];
-            ResetPlayerActionState();
             _currentState = BattleState.Input;
         }
 
@@ -511,6 +590,7 @@ public class BattleManagerScript : MonoBehaviour
     private void EndBattle()
     {
         ResetPlayerActionState();
+        DeselectPlayerSelection();
         if (_playerActorObjects.Count == 0)
         {
             Debug.Log("YOU LOSE");

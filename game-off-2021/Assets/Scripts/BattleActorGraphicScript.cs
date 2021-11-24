@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class BattleActorGraphicScript : MonoBehaviour
 {
@@ -9,10 +10,10 @@ public class BattleActorGraphicScript : MonoBehaviour
     private GameObject _mainObject;
 
     [SerializeField]
-    private TextMesh _healthDisplay;
+    private TextMeshPro _healthDisplay;
 
     [SerializeField]
-    private TextMesh _nameDisplay;
+    private TextMeshPro _nameDisplay;
 
     [SerializeField]
     private GameObject _selectionCollider;

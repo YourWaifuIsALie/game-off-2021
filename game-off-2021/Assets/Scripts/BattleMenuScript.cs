@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class BattleMenuScript : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class BattleMenuScript : MonoBehaviour
     private BattleManagerScript _battleManager;
 
     [SerializeField]
-    private Text _turnOrderDisplay;
+    private TextMeshProUGUI _turnOrderDisplay;
 
     [SerializeField]
     private Camera _camera;
@@ -24,12 +25,27 @@ public class BattleMenuScript : MonoBehaviour
     [SerializeField]
     private CanvasRenderer _hoverPanel;
 
+    [SerializeField]
+    private GameObject _buttonPrefab;
+
+    [SerializeField]
+    private GameObject _skillMenuCanvas;
+
+    [SerializeField]
+    private Text _currentActionText;
+
     // Global namespace please
     private Dictionary<string, Type> TAGTYPE = new Dictionary<string, Type> { { "BattleActor", typeof(BattleActorScript) } };
-    private Dictionary<string, string> BUTTONDESCRIPTION = new Dictionary<string, string> { { "AttackButton", "Hit one target" }, { "Skill", "Select a skill" } };
+    private Dictionary<string, string> BUTTONDESCRIPTION = new Dictionary<string, string> {
+        { "AttackButton", "Hit one target" },
+        { "SkillButton", "Select a skill" },
+        { "basicHeal", "Heal one target" } }
+    ;
 
     public PlayerEvent _buttonResponseEvent { get; set; }
     public PlayerEvent _animationEvent { get; set; }
+
+    private List<GameObject> _skillButtons;
 
     public void Start()
     {
@@ -44,9 +60,15 @@ public class BattleMenuScript : MonoBehaviour
         {
             case "allDisable":
                 _attackButton.interactable = false;
+                foreach (Button obj in _skillMenuCanvas.GetComponentsInChildren<Button>())
+                    if (obj.name != "Back")
+                        obj.interactable = false;
                 break;
             case "allEnable":
                 _attackButton.interactable = true;
+                foreach (Button obj in _skillMenuCanvas.GetComponentsInChildren<Button>())
+                    if (obj.name != "Back")
+                        obj.interactable = true;
                 break;
             default:
                 break;
@@ -61,6 +83,11 @@ public class BattleMenuScript : MonoBehaviour
         UpdateHealthBars(_battleManager._enemyActorObjects);
         UpdateDead(_battleManager._deadPlayerActorObjects);
         UpdateDead(_battleManager._deadEnemyActorObjects);
+        if (_battleManager._currentSelectedAction != null)
+            _currentActionText.text = _battleManager._currentSelectedAction.stats.displayName;
+        else
+            _currentActionText.text = " ";
+
     }
 
     private void HoverDisplay()
@@ -181,5 +208,34 @@ public class BattleMenuScript : MonoBehaviour
     {
         var script = (BattleActorScript)obj.GetComponent(typeof(BattleActorScript));
         return script._battleActor.stats.displayName;
+    }
+
+    public void GenerateSkillButtons(List<IBattleAction> actionList)
+    {
+        float xLocation = 450;
+        float yLocation = 40;
+        foreach (var action in actionList)
+        {
+            if (action.stats.name != "basicAttack")
+            {
+                GameObject obj = (GameObject)Instantiate(_buttonPrefab, new Vector3(xLocation, yLocation, 0), Quaternion.identity);
+                obj.transform.SetParent(_skillMenuCanvas.transform, false);
+                obj.name = action.stats.name;
+
+                BattleMenuButtonScript script = obj.GetComponent<BattleMenuButtonScript>();
+                script._battleManager = _battleManager;
+                script._currentMenu = _skillMenuCanvas;
+                script._otherBackButton = null;
+
+                Button button = obj.GetComponent<Button>();
+                button.onClick.RemoveAllListeners();
+                UnityEngine.Events.UnityAction buttonCallback = () => script.InvokeEvent(action.stats.name);
+                button.onClick.AddListener(buttonCallback);
+
+                Text buttonText = obj.GetComponentInChildren<Text>();
+                buttonText.text = action.stats.displayName;
+                xLocation += 100;
+            }
+        }
     }
 }

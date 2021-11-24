@@ -28,5 +28,15 @@
         "effectStrings": [
             "oppositesAttract"
         ]
+    },
+    {
+        "name": "basicHeal",
+        "displayName": "Heal",
+        "type": "ActionAttackBasic",
+        "shortDescription": "A basic heal",
+        "longDescription": "Uses the origin's base attack stat",
+        "effectStrings": [
+            "basicHeal"
+        ]
     }
 ]

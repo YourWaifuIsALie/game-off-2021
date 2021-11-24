@@ -112,7 +112,8 @@
         "level": 0,
         "tagStrings": [],
         "actionStrings": [
-            "basicAttack"
+            "basicAttack",
+            "basicHeal"
         ]
     },
     {
@@ -130,6 +131,25 @@
         "tagStrings": [
             "feeble",
             "unlucky"
+        ],
+        "actionStrings": [
+            "basicAttack"
+        ]
+    },
+    {
+        "name": "finalBoss",
+        "displayName": "Gate Guardian",
+        "type": "BasicActor",
+        "shortDescription": "OP pls nerf",
+        "longDescription": "Lord of a new era, tasked by the Creator to remove all traces of the past",
+        "maxHealth": 127,
+        "maxMana": 10,
+        "maxAttack": 127,
+        "maxDefense": 127,
+        "maxSpeed": 1,
+        "level": 127,
+        "tagStrings": [
+            "invulnerable"
         ],
         "actionStrings": [
             "basicAttack"

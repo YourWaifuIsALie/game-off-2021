@@ -1,0 +1,10 @@
+{
+    "name": "battle0",
+    "displayName": "Beginning of the end",
+    "type": "fixedBattle",
+    "shortDescription": "First battle",
+    "longDescription": "A struggle for life against the forces of change",
+    "enemyStrings": [
+        "finalBoss"
+    ]
+}

@@ -104,5 +104,14 @@
                 }
             ]
         }
-    }
+    },
+    {
+        "name": "basicHeal",
+        "displayName": "Heal",
+        "type": "EffectBasicHeal",
+        "shortDescription": "A basic heal",
+        "longDescription": "Uses the origin's base attack stat",
+        "effectValues": {},
+        "condition": {}
+    },
 ]

@@ -227,6 +227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _currentMenu: {fileID: 9130688115498467871}
   _levelLoader: {fileID: 0}
+  _battleManager: {fileID: 0}
 --- !u!1 &7532864443772142502
 GameObject:
   m_ObjectHideFlags: 0

@@ -54,5 +54,12 @@
         "type": "unlucky",
         "shortDescription": "Testing tag",
         "longDescription": "Testing tag"
+    },
+    {
+        "name": "invulnerable",
+        "displayName": "Invulnerable",
+        "type": "invulnerable",
+        "shortDescription": "Nulls all damage",
+        "longDescription": "Cannot be dealt damage from any source"
     }
 ]

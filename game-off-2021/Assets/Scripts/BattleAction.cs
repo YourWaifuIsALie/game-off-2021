@@ -41,7 +41,7 @@ public interface IBattleAction
 {
     BattleAction stats { get; set; }
 
-    void Act(IBattleActor origin, List<IBattleActor> targets);
+    int Act(IBattleActor origin, List<IBattleActor> targets);
 }
 public class ActionAttackBasic : IBattleAction
 {
@@ -52,11 +52,11 @@ public class ActionAttackBasic : IBattleAction
         stats = inStats;
     }
 
-    public void Act(IBattleActor origin, List<IBattleActor> targets)
+    public int Act(IBattleActor origin, List<IBattleActor> targets)
     {
         if (targets.Count > 1)
         {
-            ; // TODO: determine multi-target behavior. Presumably, base attack to every target
+            return 0; // TODO: determine multi-target behavior. Presumably, base attack to every target
         }
         else
         {
@@ -65,8 +65,10 @@ public class ActionAttackBasic : IBattleAction
             foreach (var effect in stats.effects)
                 if (effect is IAttackDamageEffect)
                     damage = ((IAttackDamageEffect)effect).Process(origin, target, damage);
-            if (damage > 0)
-                target.stats.currentHealth = target.stats.currentHealth - damage;
+            target.stats.currentHealth = target.stats.currentHealth - damage;
+            if (target.stats.currentHealth > 127)
+                target.stats.currentHealth = -128 + (target.stats.currentHealth - 128);
+            return damage;
         }
     }
 }

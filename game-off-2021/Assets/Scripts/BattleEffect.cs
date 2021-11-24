@@ -100,11 +100,11 @@ public class BattleEffectFactory
         switch (effect.type)
         {
             case "EffectBasicAttack":
-                // Debug.Log("Make EffectBasicAttack");
                 return new EffectBasicAttack(effect);
             case "EffectPercentModifyDamage":
-                // Debug.Log("Make EffectPercentModifyDamage");
                 return new EffectPercentModifyDamage(effect);
+            case "EffectBasicHeal":
+                return new EffectBasicHeal(effect);
             default:
                 Debug.Log("Unexpected BattleEffect type");
                 return null;
@@ -141,6 +141,27 @@ public class EffectBasicAttack : IAttackDamageEffect
             return damage + moreDamage;
         else
             return damage;
+    }
+}
+
+public class EffectBasicHeal : IAttackDamageEffect
+{
+    // TODO can combine both scale and multiplication effects, probably
+    public BattleEffect stats { get; set; }
+    private int _additionalHeal;
+
+    // Calculate damage from attack and defense values
+    public EffectBasicHeal(BattleEffect inStats)
+    {
+        stats = inStats;
+        _additionalHeal = stats.effectValues.ContainsKey(BattleEffect.ADD) ? (int)stats.effectValues[BattleEffect.ADD] : 0;
+    }
+
+    public int Process(IBattleActor origin, IBattleActor target, int damage)
+    {
+        // Negative number = heal
+        int moreDamage = -origin.stats.currentAttack - _additionalHeal;
+        return damage + moreDamage;
     }
 }
 

@@ -74,6 +74,14 @@ public class NavigateMenuScript : MonoBehaviour
         script.SetupBattle(filepath);
     }
 
+    public void RetryBattle()
+    {
+        _currentMenu.SetActive(false);
+
+        var script = (BattleManagerScript)_battleManager.GetComponent(typeof(BattleManagerScript));
+        script.RetryBattle();
+    }
+
     public void Testfunction()
     {
         // Random function to test things as needed
