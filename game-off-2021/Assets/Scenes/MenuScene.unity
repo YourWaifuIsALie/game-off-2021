@@ -1144,12 +1144,15 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '- Warrior Free Asset by Clembod
+  m_Text: '- "Warrior Free Asset" by Clembod
 
-    - Monsters_Creatures_Fantasy by Luiz
-    Melo
+    - "Monsters_Creatures_Fantasy"
+    by Luiz Melo
 
-    - Low Poly Wind by Nicrom'
+    - "Low Poly Wind" by Nicrom
+
+    - "FREE Stylized PBR Textures
+    Pack" by Lumo-Art 3D'
 --- !u!222 &1016942593
 CanvasRenderer:
   m_ObjectHideFlags: 0

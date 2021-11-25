@@ -10,13 +10,15 @@ public class DamagePopupScript : MonoBehaviour
     private Color _color;
     private TextMeshPro _script;
     private float _startTimer;
+    private float _disappearRate = 0.5f;
+    private float _radiansPerSecond = 1f;
+    private float _radians;
 
     public void Start()
     {
         _script = transform.gameObject.GetComponent<TextMeshPro>();
         _velocity = 1f;
         _startTimer = 0.01f;
-        _color = _script.color;
         _script.text = "";
     }
 
@@ -30,18 +32,27 @@ public class DamagePopupScript : MonoBehaviour
         else
         {
             _script.text = _damage.ToString();
-            transform.position += new Vector3(0, _velocity, 0) * Time.deltaTime;
-            _color.a -= Time.deltaTime;
+            _radians = Mathf.Repeat(_radians + (Time.deltaTime * _radiansPerSecond), 6.28f);
+            transform.position += new Vector3(Mathf.Sin(_radians), _velocity, 0) * Time.deltaTime;
+            if (_color == null)
+                _color = _script.color;
+            _color.a -= _disappearRate * Time.deltaTime;
             _script.color = _color;
             if (_color.a < 0)
             {
                 Destroy(gameObject);
             }
+
         }
     }
 
     public void SetDamage(int damage)
     {
         _damage = damage;
+    }
+
+    public void SetColor(Color color)
+    {
+        _color = color;
     }
 }

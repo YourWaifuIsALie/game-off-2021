@@ -23,6 +23,7 @@ public class BattleActor
 
     public int level { get; set; }
     public bool isAlive { get; set; }
+    public string bugged { get; set; }
 
     public List<string> tagStrings { get; set; }
     public Dictionary<string, BattleTag> tags { get; set; }
@@ -43,6 +44,7 @@ public class BattleActor
         currentDefense = maxDefense;
         currentSpeed = maxSpeed;
         isAlive = true;
+        bugged = "no";
     }
 
     public bool CheckAlive()
@@ -57,6 +59,7 @@ public class BattleActor
             // Overflow a "byte" of health
             currentHealth = -128 + (currentHealth - 128);
             isAlive = false;
+            bugged = "integerOverflow";
             return false;
         }
         return true;

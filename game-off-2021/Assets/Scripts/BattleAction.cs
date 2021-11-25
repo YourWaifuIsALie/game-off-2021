@@ -66,8 +66,10 @@ public class ActionAttackBasic : IBattleAction
                 if (effect is IAttackDamageEffect)
                     damage = ((IAttackDamageEffect)effect).Process(origin, target, damage);
             target.stats.currentHealth = target.stats.currentHealth - damage;
+            /*
             if (target.stats.currentHealth > 127)
                 target.stats.currentHealth = -128 + (target.stats.currentHealth - 128);
+                */
             return damage;
         }
     }

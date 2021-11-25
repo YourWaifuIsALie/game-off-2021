@@ -34,6 +34,9 @@ public class BattleMenuScript : MonoBehaviour
     [SerializeField]
     private Text _currentActionText;
 
+    [SerializeField]
+    private BugManagerScript _bugManager;
+
     // Global namespace please
     private Dictionary<string, Type> TAGTYPE = new Dictionary<string, Type> { { "BattleActor", typeof(BattleActorScript) } };
     private Dictionary<string, string> BUTTONDESCRIPTION = new Dictionary<string, string> {
@@ -75,7 +78,7 @@ public class BattleMenuScript : MonoBehaviour
         }
     }
 
-    public void Update()
+    public void LateUpdate()
     {
         HoverDisplay();
         UpdateTurnOrderDisplay();
@@ -87,7 +90,7 @@ public class BattleMenuScript : MonoBehaviour
             _currentActionText.text = _battleManager._currentSelectedAction.stats.displayName;
         else
             _currentActionText.text = " ";
-
+        // Debug.Log($"Bug level: {_bugManager.bugLevel}");
     }
 
     private void HoverDisplay()

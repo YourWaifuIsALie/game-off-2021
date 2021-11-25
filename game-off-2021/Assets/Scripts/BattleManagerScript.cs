@@ -32,6 +32,12 @@ public class BattleManagerScript : MonoBehaviour
     [SerializeField]
     private List<GameObject> _ignoreSelectionList;
 
+    [SerializeField]
+    private GameObject _levelLoader;
+
+    [SerializeField]
+    private BugManagerScript _bugManager;
+
     // TODO proper loading of arbitrary assets
     [SerializeField]
     private List<Sprite> _allSprites;
@@ -53,7 +59,7 @@ public class BattleManagerScript : MonoBehaviour
     private static string DATAPATH = Path.Combine(Application.streamingAssetsPath, "Data");
     private static string BATTLEPATH = Path.Combine(DATAPATH, "Battles");
 
-    enum BattleState { Inactive, Start, Input, Action, Waiting, Cleanup, End }
+    enum BattleState { Inactive, Start, Input, Action, Waiting, WaitingStart, WaitingEnd, Cleanup, End }
     private BattleState _currentState;
 
     public List<GameObject> _playerActorObjects { get; set; }
@@ -72,6 +78,27 @@ public class BattleManagerScript : MonoBehaviour
 
     public GameObject _currentActor { get; set; }
     public GameObject _currentTargetActor { get; set; }
+
+    // TODO proper relative postions based on field/camera position/screen size
+    // (0,2,5) = front middle, (0,2,30) = back middle, (-15, 2, 15) = left middle
+    Vector3[] playLocations = new Vector3[] {
+            new Vector3(-15, 2, 15),
+            new Vector3(-15, 2, 5),
+            new Vector3(-10, 2, 20),
+            new Vector3(-25, 2, 15),
+            new Vector3(-25, 2, 5),
+            new Vector3(-20, 2, 20)
+        };
+
+    // TODO implement math for position
+    Vector3[] enemyLocations = new Vector3[] {
+            new Vector3(15, 2, 15),
+            new Vector3(15, 2, 5),
+            new Vector3(10, 2, 20),
+            new Vector3(25, 2, 15),
+            new Vector3(25, 2, 5),
+            new Vector3(20, 2, 20)
+        };
 
     public void Start()
     {
@@ -108,6 +135,8 @@ public class BattleManagerScript : MonoBehaviour
         _currentTargetActor = null;
 
         _currentState = BattleState.Inactive;
+
+        SetupBattle("Battle0");
     }
 
     private void PlayerEventHandler(string eventValue)
@@ -145,6 +174,10 @@ public class BattleManagerScript : MonoBehaviour
                 ExecuteTurn();
                 break;
             case BattleState.Waiting:
+                break;
+            case BattleState.WaitingStart:
+            case BattleState.WaitingEnd:
+                UpdatePlayerLocation();
                 break;
             case BattleState.Cleanup:
                 SettleTurn();
@@ -214,7 +247,7 @@ public class BattleManagerScript : MonoBehaviour
         // Victory
         if (_playerActorObjects.Count != 0)
         {
-            SetupBattle("TestBattle1");
+            SetupBattle("Battle0");
         }
         else
         {
@@ -282,33 +315,12 @@ public class BattleManagerScript : MonoBehaviour
 
     private void SetupActorLocations()
     {
-        // TODO proper relative postions based on field/camera position/screen size
-        // (0,2,5) = front middle, (0,2,30) = back middle, (-15, 2, 15) = left middle
-        Vector3[] playLocations = new Vector3[] {
-            new Vector3(-15, 2, 15),
-            new Vector3(-15, 2, 5),
-            new Vector3(-10, 2, 20),
-            new Vector3(-25, 2, 15),
-            new Vector3(-25, 2, 5),
-            new Vector3(-20, 2, 20)
-        };
-
         var i = 0;
         foreach (var actor in _playerActorObjects)
         {
             actor.transform.position = playLocations[i];
             i++;
         }
-
-        // TODO implement math for position
-        Vector3[] enemyLocations = new Vector3[] {
-            new Vector3(15, 2, 15),
-            new Vector3(15, 2, 5),
-            new Vector3(10, 2, 20),
-            new Vector3(25, 2, 15),
-            new Vector3(25, 2, 5),
-            new Vector3(20, 2, 20)
-        };
 
         i = 0;
         foreach (var actor in _enemyActorObjects)
@@ -320,26 +332,71 @@ public class BattleManagerScript : MonoBehaviour
 
     private IEnumerator TransitionIn()
     {
-        // TODO some fancy animation
+        // It's a real mess without a defined animation manager eh?
+        // I assume this should be a centrally-managed system of animation events and callbacks
+        // 
+        // If I was smart I would have tied the running animation to the state of the actor object
+        // and let the change in position cause the run. Instead we have this manually timed mess.
+        int i = 0;
+        foreach (var obj in _playerActorObjects)
+        {
+            BattleActorScript battleActor = GetScriptComponent<BattleActorScript>(obj);
+            battleActor.PlayAnimation("Run");
+            Vector3 startLocation = playLocations[i];
+            startLocation.x -= 20;
+            obj.transform.position = startLocation;
+            i += 1;
+        }
+        yield return new WaitForSeconds(1);
         foreach (var obj in _playerActorObjects)
         {
             BattleActorScript battleActor = GetScriptComponent<BattleActorScript>(obj);
             battleActor.PlayAnimation("Stop");
         }
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1);
         _currentState = BattleState.Input;
     }
 
     private IEnumerator TransitionOut()
     {
-        // TODO some fancy animation
         foreach (var obj in _playerActorObjects)
         {
             BattleActorScript battleActor = GetScriptComponent<BattleActorScript>(obj);
             battleActor.PlayAnimation("Run");
         }
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(0.35f);
+        _currentState = BattleState.WaitingEnd;
+        yield return new WaitForSeconds(0.65f);
+        var script = (LevelLoaderScript)_levelLoader.GetComponent(typeof(LevelLoaderScript));
+        StartCoroutine(script.FadeScreen());
+        yield return new WaitForSeconds(1); // Wait for screen black before continuing load
+
         _currentState = BattleState.End;
+    }
+
+    private void UpdatePlayerLocation()
+    {
+        if (_currentState == BattleState.WaitingStart)
+        {
+            int i = 0;
+            foreach (var obj in _playerActorObjects)
+            {
+                obj.transform.position = Vector3.Lerp(obj.transform.position, playLocations[i], 1 * Time.deltaTime);
+                i += 1;
+            }
+
+        }
+        else if (_currentState == BattleState.WaitingEnd)
+        {
+            int i = 0;
+            foreach (var obj in _playerActorObjects)
+            {
+                Vector3 endLocation = playLocations[i];
+                endLocation.x += 10;
+                obj.transform.position = Vector3.Lerp(obj.transform.position, endLocation, 0.4f * Time.deltaTime);
+                i += 1;
+            }
+        }
     }
 
     private void GetInput()
@@ -512,14 +569,20 @@ public class BattleManagerScript : MonoBehaviour
         var target = GetScriptComponent<BattleActorScript>(_currentTargetActor)._battleActor;
 
         originActor.PlayAnimation("Attack");
-        var damage = _currentActorAction.Act(origin, new List<IBattleActor> { target });
         yield return new WaitForSeconds(seconds);
 
+        var damage = _currentActorAction.Act(origin, new List<IBattleActor> { target });
         // Popup text here instead of via animation event because we're laaaazy
         Vector3 textPosition = _currentTargetActor.transform.position;
-        textPosition.y += 2;
+        textPosition.y += 4;
         DamagePopupScript temp = Instantiate(_damagePopupPrefab, textPosition, Quaternion.identity).GetComponent<DamagePopupScript>();
-        temp.SetDamage(damage);
+        temp.SetDamage(-damage); // Negate for more sensible popup display
+        if (damage > 0)
+            temp.SetColor(Color.red);
+        else if (damage < 0)
+            temp.SetColor(Color.green);
+        else
+            temp.SetColor(Color.gray);
 
         _currentState = BattleState.Cleanup;
     }
@@ -573,6 +636,10 @@ public class BattleManagerScript : MonoBehaviour
             var actor = actorScript._battleActor;
             if (!actor.stats.CheckAlive())
             {
+                if (actor.stats.bugged == "integerOverflow")
+                {
+                    _bugManager.IntegerOverflow();
+                }
                 actorScript.PlayAnimation("Death");
                 deadList.Add(actorObject);
             }
@@ -584,7 +651,7 @@ public class BattleManagerScript : MonoBehaviour
     {
         Debug.Log("BATTLE START");
         StartCoroutine(TransitionIn());
-        _currentState = BattleState.Waiting;
+        _currentState = BattleState.WaitingStart;
     }
 
     private void EndBattle()
@@ -599,8 +666,8 @@ public class BattleManagerScript : MonoBehaviour
         {
             Debug.Log("VICTORY");
         }
-        StartCoroutine(TransitionOut());
         _currentState = BattleState.Waiting;
+        StartCoroutine(TransitionOut());
     }
 
     // TODO generic loader + factory setup?
