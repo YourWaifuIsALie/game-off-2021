@@ -77,7 +77,6 @@ public class NavigateMenuScript : MonoBehaviour
     public void RetryBattle()
     {
         _currentMenu.SetActive(false);
-
         var script = (BattleManagerScript)_battleManager.GetComponent(typeof(BattleManagerScript));
         script.RetryBattle();
     }

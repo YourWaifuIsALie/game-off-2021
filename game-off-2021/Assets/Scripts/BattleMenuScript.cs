@@ -84,6 +84,8 @@ public class BattleMenuScript : MonoBehaviour
         UpdateTurnOrderDisplay();
         UpdateHealthBars(_battleManager._playerActorObjects);
         UpdateHealthBars(_battleManager._enemyActorObjects);
+        UpdateHealthBars(_battleManager._deadEnemyActorObjects);
+        UpdateHealthBars(_battleManager._deadPlayerActorObjects);
         UpdateDead(_battleManager._deadPlayerActorObjects);
         UpdateDead(_battleManager._deadEnemyActorObjects);
         if (_battleManager._currentSelectedAction != null)

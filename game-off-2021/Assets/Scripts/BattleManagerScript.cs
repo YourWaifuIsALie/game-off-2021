@@ -70,6 +70,7 @@ public class BattleManagerScript : MonoBehaviour
     public List<GameObject> _nextTurnOrder { get; set; }
     private int _currentActorIndex;
     public string _currentPlayerAction { get; set; }
+    private string _previousPlayerAction;
     public IBattleAction _currentSelectedAction { get; set; }
     public bool _waitingForPlayerSelection { get; set; }
     private GameObject _currentPlayerSelected;
@@ -130,6 +131,7 @@ public class BattleManagerScript : MonoBehaviour
         _waitingForPlayerSelection = true;
         _currentPlayerAction = null;
         _currentSelectedAction = null;
+        _previousPlayerAction = null;
 
         _currentActor = null;
         _currentTargetActor = null;
@@ -146,11 +148,36 @@ public class BattleManagerScript : MonoBehaviour
     }
     private void AnimationEventHandler(string eventValue)
     {
-        switch (eventValue)
+        // "eventValue,objectID"
+        string[] eventValues = eventValue.Split(',');
+        // This has multiple race conditions between the game logic loop, player selection, and animation event
+        // Slightly buffered in some cases, this is too much of a mess to easily fix now
+        switch (eventValues[0])
         {
             case "Hurt":
                 BattleActorScript actor = GetScriptComponent<BattleActorScript>(_currentTargetActor);
-                actor.PlayAnimation("Hurt");
+                // If only we tracked by instanceid
+                if (_playerActorObjects.Find(x => x.GetInstanceID().ToString() == eventValues[1]))
+                {
+                    switch (_previousPlayerAction)
+                    {
+                        case "basicAttack":
+                            actor.PlayAnimation("Hurt");
+                            actor.PlaySound("Hurt");
+                            break;
+                        case "basicHeal":
+                            actor.PlaySound("Heal");
+                            break;
+                        default:
+                            Debug.Log("No specific animation of player action");
+                            break;
+                    }
+                }
+                else
+                {
+                    actor.PlayAnimation("Hurt");
+                    actor.PlaySound("Hurt");
+                }
                 break;
             default:
                 break;
@@ -259,6 +286,17 @@ public class BattleManagerScript : MonoBehaviour
 
     public void RetryBattle()
     {
+        Debug.Log("Retry Battle");
+        StartCoroutine(RetryFade());
+    }
+
+    private IEnumerator RetryFade()
+    {
+        // Sloppy sloppy
+        var script = (LevelLoaderScript)_levelLoader.GetComponent(typeof(LevelLoaderScript));
+        StartCoroutine(script.FadeScreen());
+        yield return new WaitForSeconds(1); // Wait for screen black before continuing load
+        _defeatMenu.SetActive(false);
         SetupBattle(_currentBattle);
     }
 
@@ -435,6 +473,7 @@ public class BattleManagerScript : MonoBehaviour
                             _currentTargetActor = _enemyActorObjects.Find(x => x.GetInstanceID() == _currentPlayerSelected.GetInstanceID());
                             if (_currentTargetActor != null)
                             {
+                                _previousPlayerAction = _currentPlayerAction;
                                 _currentPlayerAction = null;
                                 _currentState = BattleState.Action;
                             }
@@ -557,7 +596,7 @@ public class BattleManagerScript : MonoBehaviour
 
     private void ExecuteTurn()
     {
-        StartCoroutine(ArtificialSlowdown(1.5f));
+        StartCoroutine(ArtificialSlowdown(1.2f));
         _currentState = BattleState.Waiting;
     }
 
@@ -614,7 +653,9 @@ public class BattleManagerScript : MonoBehaviour
             _currentTurnOrder = _nextTurnOrder; // TODO to account for dead actors
 
             if (_playerActorObjects.Contains(_currentActor))
+            {
                 ResetPlayerActionState();
+            }
 
             _currentActorIndex += 1;
             if (_currentActorIndex >= _currentTurnOrder.Count)

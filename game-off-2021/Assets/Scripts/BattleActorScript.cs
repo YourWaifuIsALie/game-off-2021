@@ -7,6 +7,12 @@ public class BattleActorScript : MonoBehaviour
     [SerializeField]
     public BattleManagerScript _battleManager;
 
+    [SerializeField]
+    private AudioSource _hurtSound;
+
+    [SerializeField]
+    private AudioSource _magicSound;
+
     public GameObject battleActorGraphics;
 
     public IBattleActor _battleActor { get; set; }
@@ -26,6 +32,20 @@ public class BattleActorScript : MonoBehaviour
     {
         var graphicsScript = (BattleActorGraphicScript)battleActorGraphics.GetComponent(typeof(BattleActorGraphicScript));
         graphicsScript.PlayAnimation(value);
+    }
+    public void PlaySound(string value)
+    {
+        switch (value)
+        {
+            case "Hurt":
+                _hurtSound.Play();
+                break;
+            case "Heal":
+                _magicSound.Play();
+                break;
+            default:
+                break;
+        }
     }
     public void SetDead()
     {
