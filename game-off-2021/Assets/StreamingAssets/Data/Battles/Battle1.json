@@ -1,0 +1,13 @@
+{
+    "name": "battle1",
+    "displayName": "Not today",
+    "type": "fixedBattle",
+    "shortDescription": "Second battle",
+    "longDescription": "A glimmer of hope in the sea of despair",
+    "playerStrings": [
+        "mainCharacter1"
+    ],
+    "enemyStrings": [
+        "finalBossUpdated"
+    ]
+}

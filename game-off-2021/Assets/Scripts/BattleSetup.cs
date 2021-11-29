@@ -11,10 +11,13 @@ public class BattleSetup
     public string longDescription { get; set; }
     public List<string> enemyStrings { get; set; }
     public List<IBattleActor> enemies { get; set; }
+    public List<string> playerStrings { get; set; }
+    public List<IBattleActor> players { get; set; }
 
     public BattleSetup()
     {
         enemies = new List<IBattleActor>();
+        players = new List<IBattleActor>();
     }
 }
 
@@ -28,17 +31,29 @@ public class BattleSetupFactory
         foreach (var enemyString in setup.enemyStrings)
         {
             // TODO only append names to numbers if there's duplicates
-            if (identicalEnemyCount.TryGetValue(enemyString, out value))
+            if (setup.enemyStrings.Count > 1)
             {
-                value += 1;
-                identicalEnemyCount[enemyString] = value;
+                if (identicalEnemyCount.TryGetValue(enemyString, out value))
+                {
+                    value += 1;
+                    identicalEnemyCount[enemyString] = value;
+                }
+                else
+                {
+                    value = 1;
+                    identicalEnemyCount[enemyString] = value;
+                }
+                setup.enemies.Add(CopyBattleActor(allActors[enemyString], allActions, allTags, value));
             }
             else
             {
-                value = 1;
-                identicalEnemyCount[enemyString] = value;
+                setup.enemies.Add(CopyBattleActor(allActors[enemyString], allActions, allTags));
             }
-            setup.enemies.Add(CopyBattleActor(allActors[enemyString], allActions, allTags, value));
+        }
+
+        foreach (var playerString in setup.playerStrings)
+        {
+            setup.players.Add(CopyBattleActor(allActors[playerString], allActions, allTags));
         }
     }
 
@@ -53,6 +68,22 @@ public class BattleSetupFactory
         {
             if (dupeNumber > 0)
                 createdObject.stats.displayName = createdObject.stats.displayName + $" {dupeNumber}";
+            return createdObject;
+        }
+
+        return null;
+
+    }
+
+    private static IBattleActor CopyBattleActor(BattleActor parent, Dictionary<string, IBattleAction> allActions, Dictionary<string, BattleTag> allTags)
+    {
+        // Lazy way to copy an object using pre-existing deserializer
+        string serializedParent = JsonConvert.SerializeObject(parent);
+        BattleActor newBattleActor = JsonConvert.DeserializeObject<BattleActor>(serializedParent);
+
+        IBattleActor createdObject = BattleActorFactory.Make(newBattleActor, allActions, allTags);
+        if (createdObject is IBattleActor)
+        {
             return createdObject;
         }
 

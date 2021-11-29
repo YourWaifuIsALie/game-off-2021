@@ -10,14 +10,27 @@ public class BugManagerScript : MonoBehaviour
     [SerializeField]
     private GameObject _groundObject;
 
+    [SerializeField]
+    private MusicManagerScript _musicManager;
+
+    [SerializeField]
+    private GameObject _skyPlane;
+    [SerializeField]
+    private Material _skyBugMaterial;
+
     public int bugLevel { get; set; }
     private Dictionary<string, bool> _bugAchieved;
+
+    private bool _musicChangeOnce;
 
     public void Start()
     {
         bugLevel = 0;
         _bugAchieved = new Dictionary<string, bool>();
-        _bugAchieved["integerOverflow"] = false;
+        _bugAchieved["integerOverflow"] = false; // Overflow enemy health
+        _bugAchieved["illegalAction"] = false;  // Just the byteswap ability for now
+
+        _musicChangeOnce = true;
     }
 
     public void LateUpdate()
@@ -29,6 +42,16 @@ public class BugManagerScript : MonoBehaviour
                 break;
             case 1:
                 _groundObject.GetComponent<MeshRenderer>().material = _groundStaticMaterial;
+                break;
+            case 2:
+                _skyPlane.GetComponent<MeshRenderer>().material = _skyBugMaterial;
+                break;
+            case 3:
+                if (_musicChangeOnce)
+                {
+                    _musicManager.SwitchMusic("bug");
+                    _musicChangeOnce = false;
+                }
                 break;
             default:
                 break;
@@ -49,5 +72,15 @@ public class BugManagerScript : MonoBehaviour
     public void IntegerOverflow()
     {
         _bugAchieved["integerOverflow"] = true;
+    }
+
+    public void IllegalAction()
+    {
+        _bugAchieved["illegalAction"] = true;
+    }
+
+    public void BattleComplete(string value)
+    {
+        _bugAchieved[value] = true;
     }
 }

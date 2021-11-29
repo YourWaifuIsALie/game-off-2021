@@ -4,6 +4,9 @@
     "type": "fixedBattle",
     "shortDescription": "Testing battle creation",
     "longDescription": "Testing battle creation",
+    "playerStrings": [
+        "mainCharacter0"
+    ],
     "enemyStrings": [
         "weakling"
     ]

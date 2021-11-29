@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 using Newtonsoft.Json;
 public class NavigateMenuScript : MonoBehaviour
@@ -76,7 +77,8 @@ public class NavigateMenuScript : MonoBehaviour
 
     public void RetryBattle()
     {
-        _currentMenu.SetActive(false);
+        // Disable button so player can't spam click
+        gameObject.GetComponent<Button>().enabled = false;
         var script = (BattleManagerScript)_battleManager.GetComponent(typeof(BattleManagerScript));
         script.RetryBattle();
     }

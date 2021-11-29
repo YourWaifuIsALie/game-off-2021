@@ -428,9 +428,9 @@ RectTransform:
   m_Father: {fileID: 5758352841754074669}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -250, y: -5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 350, y: 35}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8765192345891287679
@@ -758,6 +758,7 @@ MonoBehaviour:
   _buttonPrefab: {fileID: 2428232773434149249, guid: 4ccfcc62d22d46944bc8cdfd5ceab391, type: 3}
   _skillMenuCanvas: {fileID: 7065692989464108486}
   _currentActionText: {fileID: 5483359525977254157}
+  _bugManager: {fileID: 0}
 --- !u!1 &5758352843572533091
 GameObject:
   m_ObjectHideFlags: 0
@@ -811,6 +812,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 32768
   _ignoreSelectionList: []
+  _levelLoader: {fileID: 0}
+  _bugManager: {fileID: 0}
+  _optionsManager: {fileID: 0}
   _allSprites: []
   _allAnimators: []
 --- !u!1 &6413386754465753430

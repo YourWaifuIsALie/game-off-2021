@@ -1,0 +1,15 @@
+{
+    "name": "battle3",
+    "displayName": "Anger of the Gods",
+    "type": "fixedBattle",
+    "shortDescription": "Fourth battle",
+    "longDescription": "Really trying to delete you now",
+    "playerStrings": [
+        "mainCharacter3"
+    ],
+    "enemyStrings": [
+        "handcrafted2",
+        "weakling",
+        "weakling"
+    ]
+}

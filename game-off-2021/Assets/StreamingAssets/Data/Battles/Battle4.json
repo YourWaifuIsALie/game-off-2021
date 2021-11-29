@@ -1,0 +1,14 @@
+{
+    "name": "battle4",
+    "displayName": "",
+    "type": "fixedBattle",
+    "shortDescription": "Fifth battle",
+    "longDescription": "",
+    "playerStrings": [
+        "mainCharacter4"
+    ],
+    "enemyStrings": [
+        "finalBossUpdated",
+        "handcrafted2"
+    ]
+}

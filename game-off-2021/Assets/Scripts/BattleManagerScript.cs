@@ -38,6 +38,12 @@ public class BattleManagerScript : MonoBehaviour
     [SerializeField]
     private BugManagerScript _bugManager;
 
+    [SerializeField]
+    private OptionsManagerScript _optionsManager;
+
+    [SerializeField]
+    private MusicManagerScript _musicManager;
+
     // TODO proper loading of arbitrary assets
     [SerializeField]
     private List<Sprite> _allSprites;
@@ -76,6 +82,8 @@ public class BattleManagerScript : MonoBehaviour
     private GameObject _currentPlayerSelected;
     private IBattleAction _currentActorAction;
     private string _currentBattle;
+    private int _currentBattleIndex;
+    private bool _illegalActionBug;
 
     public GameObject _currentActor { get; set; }
     public GameObject _currentTargetActor { get; set; }
@@ -83,22 +91,22 @@ public class BattleManagerScript : MonoBehaviour
     // TODO proper relative postions based on field/camera position/screen size
     // (0,2,5) = front middle, (0,2,30) = back middle, (-15, 2, 15) = left middle
     Vector3[] playLocations = new Vector3[] {
-            new Vector3(-15, 2, 15),
+            new Vector3(-15, 2, 12),
             new Vector3(-15, 2, 5),
             new Vector3(-10, 2, 20),
-            new Vector3(-25, 2, 15),
+            new Vector3(-25, 2, 12),
             new Vector3(-25, 2, 5),
             new Vector3(-20, 2, 20)
         };
 
     // TODO implement math for position
     Vector3[] enemyLocations = new Vector3[] {
-            new Vector3(15, 2, 15),
-            new Vector3(15, 2, 5),
-            new Vector3(10, 2, 20),
-            new Vector3(25, 2, 15),
-            new Vector3(25, 2, 5),
-            new Vector3(20, 2, 20)
+            new Vector3(10, 2, 12),
+            new Vector3(14, 2, 4),
+            new Vector3(3, 2, 20),
+            new Vector3(20, 2, 12),
+            new Vector3(20, 2, 4),
+            new Vector3(14, 2, 20)
         };
 
     public void Start()
@@ -136,9 +144,13 @@ public class BattleManagerScript : MonoBehaviour
         _currentActor = null;
         _currentTargetActor = null;
 
+        _illegalActionBug = false;
+
         _currentState = BattleState.Inactive;
 
-        SetupBattle("Battle0");
+        _currentBattleIndex = 0;
+        _currentBattle = $"Battle{_currentBattleIndex.ToString()}";
+        SetupBattle(_currentBattle);
     }
 
     private void PlayerEventHandler(string eventValue)
@@ -169,7 +181,7 @@ public class BattleManagerScript : MonoBehaviour
                             actor.PlaySound("Heal");
                             break;
                         default:
-                            Debug.Log("No specific animation of player action");
+                            actor.PlaySound("Bug");
                             break;
                     }
                 }
@@ -238,12 +250,7 @@ public class BattleManagerScript : MonoBehaviour
         _deadPlayerActorObjects = new List<GameObject>();
         _playerActorObjects = new List<GameObject>();
 
-        // Recreate player everytime to avoid issues
-        dynamic createdObject = BattleActorFactory.Make(_allActors["mainCharacter"], _allActions, _allTags);
-        _playerActorObjects.Add(CreateActorObject(createdObject, false));
-
         // Load battle file
-        _currentBattle = inputPath;
         string battleFilePath = inputPath;
         if (!Path.HasExtension(battleFilePath))
             battleFilePath = battleFilePath + ".json";
@@ -251,8 +258,13 @@ public class BattleManagerScript : MonoBehaviour
         BattleSetup battleSetup = JsonConvert.DeserializeObject<BattleSetup>(filein);
         BattleSetupFactory.Make(battleSetup, _allActors, _allActions, _allTags);
 
+        // Create actor objects from json
         foreach (IBattleActor enemyActor in battleSetup.enemies)
             _enemyActorObjects.Add(CreateActorObject(enemyActor, true));
+
+        // Recreate player everytime to avoid issues
+        foreach (IBattleActor playerActor in battleSetup.players)
+            _playerActorObjects.Add(CreateActorObject(playerActor, false));
 
         SetupActorLocations();
         _nextTurnOrder = _currentTurnOrder = DetermineTurnOrder();
@@ -274,12 +286,41 @@ public class BattleManagerScript : MonoBehaviour
         // Victory
         if (_playerActorObjects.Count != 0)
         {
-            SetupBattle("Battle0");
+            _currentBattleIndex += 1;
+            _currentBattle = $"Battle{_currentBattleIndex.ToString()}";
+
+            switch (_currentBattleIndex)
+            {
+                case 2:
+                    _musicManager.SwitchMusic("next");
+                    break;
+                case 3:
+                    _bugManager.BattleComplete("battle3");
+                    break;
+                default:
+                    break;
+            }
+
+            // Copied code
+            string battleFilePath = _currentBattle;
+            if (!Path.HasExtension(battleFilePath))
+                battleFilePath = battleFilePath + ".json";
+
+            if (File.Exists(Path.Combine(BATTLEPATH, battleFilePath)))
+                SetupBattle(_currentBattle);
+            else
+            {
+                // TODO some endgame condition
+                _battleMenu.SetActive(false);
+                _defeatMenu.SetActive(true);
+                _currentState = BattleState.Waiting;
+            }
         }
         else
         {
             _battleMenu.SetActive(false);
             _defeatMenu.SetActive(true);
+            _currentState = BattleState.Waiting;
         }
 
     }
@@ -307,6 +348,7 @@ public class BattleManagerScript : MonoBehaviour
         script._battleActor = actor;
         obj.name = actor.stats.name;
         script._battleManager = this;
+        script._optionsManager = _optionsManager;
         var graphicScript = (BattleActorGraphicScript)script.battleActorGraphics.GetComponent(typeof(BattleActorGraphicScript));
         graphicScript.SetGraphics(_allSprites[0], _allAnimators[0]);
         graphicScript.isFlipped = isFlipped;
@@ -476,6 +518,10 @@ public class BattleManagerScript : MonoBehaviour
                                 _previousPlayerAction = _currentPlayerAction;
                                 _currentPlayerAction = null;
                                 _currentState = BattleState.Action;
+
+                                // Just placing these throughout the code haphazardly no biggie
+                                if (_currentActorAction.stats.name == "byteSwap")
+                                    _illegalActionBug = true;
                             }
 
                         }
@@ -485,6 +531,7 @@ public class BattleManagerScript : MonoBehaviour
                             _currentTargetActor = _playerActorObjects.Find(x => x.GetInstanceID() == _currentPlayerSelected.GetInstanceID());
                             if (_currentTargetActor != null)
                             {
+                                _previousPlayerAction = _currentPlayerAction;
                                 _currentPlayerAction = null;
                                 _currentState = BattleState.Action;
                             }
@@ -611,6 +658,14 @@ public class BattleManagerScript : MonoBehaviour
         yield return new WaitForSeconds(seconds);
 
         var damage = _currentActorAction.Act(origin, new List<IBattleActor> { target });
+
+        // Bug set here for dumb timing reasons
+        if (_illegalActionBug)
+        {
+            _bugManager.IllegalAction();
+            _illegalActionBug = false;
+        }
+
         // Popup text here instead of via animation event because we're laaaazy
         Vector3 textPosition = _currentTargetActor.transform.position;
         textPosition.y += 4;

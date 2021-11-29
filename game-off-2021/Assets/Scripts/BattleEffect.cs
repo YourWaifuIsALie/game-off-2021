@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using Newtonsoft.Json;
@@ -105,6 +106,8 @@ public class BattleEffectFactory
                 return new EffectPercentModifyDamage(effect);
             case "EffectBasicHeal":
                 return new EffectBasicHeal(effect);
+            case "EffectByteSwap":
+                return new EffectByteSwap(effect);
             default:
                 Debug.Log("Unexpected BattleEffect type");
                 return null;
@@ -162,6 +165,39 @@ public class EffectBasicHeal : IAttackDamageEffect
         // Negative number = heal
         int moreDamage = -origin.stats.currentAttack - _additionalHeal;
         return damage + moreDamage;
+    }
+}
+
+public class EffectByteSwap : IAttackDamageEffect
+{
+    // TODO can combine both scale and multiplication effects, probably
+    public BattleEffect stats { get; set; }
+
+    // Calculate damage from attack and defense values
+    public EffectByteSwap(BattleEffect inStats)
+    {
+        stats = inStats;
+    }
+
+    public int Process(IBattleActor origin, IBattleActor target, int damage)
+    {
+        byte[] bytes = BitConverter.GetBytes(target.stats.currentHealth);
+        Array.Reverse(bytes);
+        // Shift bytes to create a new int
+        bytes[0] = bytes[2];
+        bytes[1] = bytes[3];
+        // Is MSB positive or negative?
+        // Assuming little endian...
+        if ((0x80 & bytes[1]) == 0)
+        {
+            bytes[2] = bytes[3] = 0;
+        }
+        else
+        {
+            bytes[2] = bytes[3] = 0xFF;
+        }
+        int newHealth = BitConverter.ToInt32(bytes, 0);
+        return target.stats.currentHealth - newHealth;
     }
 }
 

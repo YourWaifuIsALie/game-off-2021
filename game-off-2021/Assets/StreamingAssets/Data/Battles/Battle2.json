@@ -1,0 +1,15 @@
+{
+    "name": "battle2",
+    "displayName": "Attention of the Gods",
+    "type": "fixedBattle",
+    "shortDescription": "Third battle",
+    "longDescription": "An oppressive hand, smothering",
+    "playerStrings": [
+        "mainCharacter2"
+    ],
+    "enemyStrings": [
+        "handcrafted",
+        "weakling",
+        "weakling"
+    ]
+}

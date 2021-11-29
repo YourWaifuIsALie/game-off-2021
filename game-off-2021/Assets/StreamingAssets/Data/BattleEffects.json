@@ -114,4 +114,13 @@
         "effectValues": {},
         "condition": {}
     },
+    {
+        "name": "byteSwap",
+        "displayName": "Byte Swap",
+        "type": "EffectByteSwap",
+        "shortDescription": "Swapping health bytes",
+        "longDescription": "Flip the target's heath between big and little endian",
+        "effectValues": {},
+        "condition": {}
+    }
 ]

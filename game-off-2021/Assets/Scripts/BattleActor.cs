@@ -30,6 +30,9 @@ public class BattleActor
     public List<string> actionStrings { get; set; }
     public Dictionary<string, IBattleAction> actions { get; set; }
 
+    public static int MAXHEALTH = 32767;
+    public static int MINHEALTH = -32768;
+
     public BattleActor()
     {
         tags = new Dictionary<string, BattleTag>();
@@ -54,10 +57,11 @@ public class BattleActor
             isAlive = false;
             return false;
         }
-        else if (currentHealth > 127)
+        else if (currentHealth > MAXHEALTH)
         {
-            // Overflow a "byte" of health
-            currentHealth = -128 + (currentHealth - 128);
+            // Overflow two bytes of health
+            // Signed negative is twos-complement representation
+            currentHealth = 0 - (currentHealth - MAXHEALTH);
             isAlive = false;
             bugged = "integerOverflow";
             return false;

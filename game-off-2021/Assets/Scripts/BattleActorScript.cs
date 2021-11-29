@@ -9,19 +9,31 @@ public class BattleActorScript : MonoBehaviour
 
     [SerializeField]
     private AudioSource _hurtSound;
-
     [SerializeField]
     private AudioSource _magicSound;
+    [SerializeField]
+    private AudioSource _bugSound;
+    [SerializeField]
+    private ParticleSystem _hurtVisual;
+    [SerializeField]
+    private ParticleSystem _magicVisual;
+
+    [SerializeField]
+    public OptionsManagerScript _optionsManager;
 
     public GameObject battleActorGraphics;
 
     public IBattleActor _battleActor { get; set; }
     private bool _isSelected;
 
-    public BattleActorScript()
+    public void Start()
     {
         _isSelected = false;
+        _hurtSound.volume = _optionsManager.GetVolume(_hurtSound.clip.name);
+        _magicSound.volume = _optionsManager.GetVolume(_magicSound.clip.name);
+        _bugSound.volume = _optionsManager.GetVolume(_bugSound.clip.name);
     }
+
     public void SetSelected(bool value)
     {
         _isSelected = value;
@@ -39,9 +51,14 @@ public class BattleActorScript : MonoBehaviour
         {
             case "Hurt":
                 _hurtSound.Play();
+                _hurtVisual.Play();
                 break;
             case "Heal":
                 _magicSound.Play();
+                _magicVisual.Play();
+                break;
+            case "Bug":
+                _bugSound.Play();
                 break;
             default:
                 break;

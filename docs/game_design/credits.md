@@ -13,6 +13,7 @@ Art assets:
 - [Low Poly Wind](https://assetstore.unity.com/packages/vfx/shaders/low-poly-wind-182586) by [Nicrom](https://assetstore.unity.com/publishers/12903)
 - [FREE Stylized PBR Textures Pack](https://assetstore.unity.com/packages/2d/textures-materials/free-stylized-pbr-textures-pack-111778) by [Lumo-Art 3D](https://assetstore.unity.com/publishers/6000)
 - [Cartoon FX Free](https://assetstore.unity.com/packages/vfx/particles/cartoon-fx-free-109565) by [Jean Moreno (JMO)](https://assetstore.unity.com/publishers/1669)
+- [SIMPLE FANTASY GUI](https://assetstore.unity.com/packages/2d/gui/simple-fantasy-gui-99451#content) by [Nayrissa](https://assetstore.unity.com/publishers/31126)
 
 Sound assets:
 - [Action RPG Music Free](https://assetstore.unity.com/packages/audio/music/action-rpg-music-free-85434) by [VGcomposer](https://assetstore.unity.com/publishers/27795)

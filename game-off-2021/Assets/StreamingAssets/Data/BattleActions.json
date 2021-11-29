@@ -38,5 +38,15 @@
         "effectStrings": [
             "basicHeal"
         ]
+    },
+    {
+        "name": "byteSwap",
+        "displayName": "Endiattack",
+        "type": "ActionAttackBasic",
+        "shortDescription": "A basic heal",
+        "longDescription": "Uses the origin's base attack stat",
+        "effectStrings": [
+            "byteSwap"
+        ]
     }
 ]

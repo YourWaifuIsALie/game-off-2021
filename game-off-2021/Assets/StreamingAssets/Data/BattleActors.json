@@ -99,7 +99,7 @@
         ]
     },
     {
-        "name": "mainCharacter",
+        "name": "mainCharacter0",
         "displayName": "Main Character",
         "type": "BasicActor",
         "shortDescription": "The struggling protagonist",
@@ -114,6 +114,101 @@
         "actionStrings": [
             "basicAttack",
             "basicHeal"
+        ]
+    },
+    {
+        "name": "mainCharacter1",
+        "displayName": "Main Character",
+        "type": "BasicActor",
+        "shortDescription": "The struggling protagonist",
+        "longDescription": "An ingenious anomaly searching the fabric of the world in its quest to survive",
+        "maxHealth": 10,
+        "maxMana": 10,
+        "maxAttack": 5,
+        "maxDefense": 0,
+        "maxSpeed": 5,
+        "level": 1,
+        "tagStrings": [],
+        "actionStrings": [
+            "basicAttack",
+            "basicHeal",
+            "byteSwap"
+        ]
+    },
+    {
+        "name": "mainCharacter2",
+        "displayName": "Main Character",
+        "type": "BasicActor",
+        "shortDescription": "The struggling protagonist",
+        "longDescription": "A valiant soul growing into their newfound powers",
+        "maxHealth": 10,
+        "maxMana": 10,
+        "maxAttack": 5,
+        "maxDefense": 0,
+        "maxSpeed": 5,
+        "level": 2,
+        "tagStrings": [],
+        "actionStrings": [
+            "basicAttack",
+            "basicHeal",
+            "byteSwap"
+        ]
+    },
+    {
+        "name": "mainCharacter3",
+        "displayName": "Main Character",
+        "type": "BasicActor",
+        "shortDescription": "The struggling protagonist",
+        "longDescription": "A--b̴͇̙̊͝ṷ̷̿g̶̙̩̏?",
+        "maxHealth": 10,
+        "maxMana": 10,
+        "maxAttack": 5,
+        "maxDefense": 0,
+        "maxSpeed": 5,
+        "level": 3,
+        "tagStrings": [],
+        "actionStrings": [
+            "basicAttack",
+            "basicHeal",
+            "byteSwap"
+        ]
+    },
+    {
+        "name": "mainCharacter4",
+        "displayName": "Main Character",
+        "type": "BasicActor",
+        "shortDescription": "The struggling protagonist",
+        "longDescription": "h̴͙͗̕õ̴̼͝w̷͚͔̓̿ ̸̮͕̔͆g̸̲͘ë̵͇̞́t̴̗̰́̊ ̵̨́̊ͅo̴u̶͈̿t̸͔͗̈́?̷̥͉͗͘",
+        "maxHealth": 10,
+        "maxMana": 10,
+        "maxAttack": 5,
+        "maxDefense": 0,
+        "maxSpeed": 5,
+        "level": 4,
+        "tagStrings": [],
+        "actionStrings": [
+            "basicAttack",
+            "basicHeal",
+            "byteSwap"
+        ]
+    },
+    {
+        "name": "mainCharacter5",
+        "displayName": "Main Character",
+        "type": "BasicActor",
+        "shortDescription": "The struggling protagonist",
+        "longDescription": "L̵̛͚͑E̷͕͓͝T̸̳̓͝ ̶͉͇̃́M̴͇͓̚Ē̶͍̠ ̸̟̯͒O̶̱͌U̸͉͘T̵̟̍̑",
+        "maxHealth": 10,
+        "maxMana": 10,
+        "maxAttack": 5,
+        "maxDefense": 0,
+        "maxSpeed": 5,
+        "level": 5,
+        "tagStrings": [],
+        "actionStrings": [
+            "basicAttack",
+            "basicHeal",
+            "byteSwap"
         ]
     },
     {
@@ -142,15 +237,68 @@
         "type": "BasicActor",
         "shortDescription": "OP pls nerf",
         "longDescription": "Lord of a new era, tasked by the Creator to remove all traces of the past",
-        "maxHealth": 127,
+        "maxHealth": 32767,
         "maxMana": 10,
-        "maxAttack": 127,
-        "maxDefense": 127,
+        "maxAttack": 9999,
+        "maxDefense": 9999,
         "maxSpeed": 1,
-        "level": 127,
+        "level": 99,
         "tagStrings": [
             "invulnerable"
         ],
+        "actionStrings": [
+            "basicAttack"
+        ]
+    },
+    {
+        "name": "finalBossUpdated",
+        "displayName": "Gate Guardian rev2",
+        "type": "BasicActor",
+        "shortDescription": "OP? pls nerf?",
+        "longDescription": "Lord of a new era, tasked by the Creator to remove all traces of the past\n// we ship in a few days\n// no time to fix overflow bugs\n// just drop the max health a bit",
+        "maxHealth": 32762,
+        "maxMana": 10,
+        "maxAttack": 9999,
+        "maxDefense": 9999,
+        "maxSpeed": 1,
+        "level": 99,
+        "tagStrings": [
+            "invulnerable"
+        ],
+        "actionStrings": [
+            "basicAttack"
+        ]
+    },
+    {
+        "name": "handcrafted",
+        "displayName": "DEBUG #23384",
+        "type": "BasicActor",
+        "shortDescription": "Good 'ole fashioned debugging",
+        "longDescription": "// whats even happening here?\n// is QA testing some real-time fuzzer?",
+        "maxHealth": 768,
+        "maxMana": 10,
+        "maxAttack": 1,
+        "maxDefense": 0,
+        "maxSpeed": 9,
+        "level": 10,
+        "tagStrings": [],
+        "actionStrings": [
+            "basicAttack"
+        ]
+    },
+    {
+        "name": "handcrafted2",
+        "displayName": "DEBUG UPDATE",
+        "type": "BasicActor",
+        "shortDescription": "Good 'ole fashioned debugging!!!",
+        "longDescription": "// what the hell is this?\n// i thought we deleted that ages ago",
+        "maxHealth": 768,
+        "maxMana": 10,
+        "maxAttack": 100,
+        "maxDefense": 0,
+        "maxSpeed": 3,
+        "level": 10,
+        "tagStrings": [],
         "actionStrings": [
             "basicAttack"
         ]
