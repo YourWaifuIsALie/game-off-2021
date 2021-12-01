@@ -1,0 +1,381 @@
+fileFormatVersion: 2
+guid: 4f0ca951d6d130c47bbab88bc5395c6f
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: mc_sprites_idle_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 255
+        width: 60
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.61}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4410aaa5c6a868150800000000000000
+      internalID: 5874534961933582660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mc_sprites_idle_1
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 255
+        width: 60
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.61}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d626a9f60ecfa9f10800000000000000
+      internalID: 2277410602464469613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mc_sprites_idle_2
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 255
+        width: 60
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.61}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 274d67551dc53ded0800000000000000
+      internalID: -2390464923051830158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mc_sprites_attack_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 214
+        width: 60
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.61}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 99c83210d53c50670800000000000000
+      internalID: 8504418275577531545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mc_sprites_attack_4
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 214
+        width: 60
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.61}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a6ae090d9fc5de070800000000000000
+      internalID: 8137262329744124522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mc_sprites_attack_5
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 214
+        width: 60
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.61}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3e717cba5d52ceb20800000000000000
+      internalID: 3164946237774829539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mc_sprites_attack_6
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 212
+        width: 60
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.61}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 43cf55bffc281e3d0800000000000000
+      internalID: -3179116032160302028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mc_sprites_attack_7
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 212
+        width: 60
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.61}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5a2cebd96f3a85e90800000000000000
+      internalID: -7036694138162593115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mc_sprites_attack_8
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 212
+        width: 60
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.61}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a2344c30d5422e940800000000000000
+      internalID: 5323857691419099946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mc_sprites_hurt_9
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 167
+        width: 60
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.61}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9019e52096254d270800000000000000
+      internalID: 8274329026351239433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mc_sprites_hurt_10
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 167
+        width: 60
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.61}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ef750ac738e05200800000000000000
+      internalID: 166888512522911715
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mc_sprites_hurt_11
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 167
+        width: 60
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.61}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b72de1935031ce520800000000000000
+      internalID: 2732579987061133947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: mc_sprites_hurt_12
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 167
+        width: 60
+        height: 40
+      alignment: 9
+      pivot: {x: 0.5, y: 0.61}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df07b00d02eb43780800000000000000
+      internalID: -8704123131661684483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 769205a9f816de944bd478b3a16fcbf9
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using UnityEngine.SceneManagement;
 
 public class BattleManagerScript : MonoBehaviour
 {
@@ -49,6 +50,21 @@ public class BattleManagerScript : MonoBehaviour
     private List<Sprite> _allSprites;
     [SerializeField]
     private List<RuntimeAnimatorController> _allAnimators;
+
+    // Crunch time pairing of actors to graphics
+    private Dictionary<string, int> _actorGraphicsDictionary = new Dictionary<string, int> {
+        {"mainCharacter0", 3},
+        {"mainCharacter1", 3},
+        {"mainCharacter2", 3},
+        {"mainCharacter3", 3},
+        {"mainCharacter4", 3},
+        {"mainCharacter5", 3},
+        {"finalBoss", 1},
+        {"finalBossUpdated", 1},
+        {"handcrafted", 0},
+        {"handcrafted2", 0},
+        {"weakling", 2}
+    };
 
 
     public PlayerEvent _playerInputEvent { get; set; }
@@ -277,7 +293,7 @@ public class BattleManagerScript : MonoBehaviour
 
         _battleMenu.SetActive(true);
 
-        Debug.Log("Starting battle: " + battleSetup.displayName + " (" + battleSetup.type + ")");
+        // Debug.Log("Starting battle: " + battleSetup.displayName + " (" + battleSetup.type + ")");
         _currentState = BattleState.Start;
     }
 
@@ -312,12 +328,16 @@ public class BattleManagerScript : MonoBehaviour
             {
                 // TODO some endgame condition
                 _battleMenu.SetActive(false);
-                _defeatMenu.SetActive(true);
+                _defeatMenu.SetActive(false);
                 _currentState = BattleState.Waiting;
+                SceneManager.LoadScene("EndingScene");
             }
         }
         else
         {
+            foreach (Button button in _defeatMenu.GetComponentsInChildren<Button>())
+                button.enabled = true;
+            //_defeatMenu.GetComponent<Button>().enabled = true;
             _battleMenu.SetActive(false);
             _defeatMenu.SetActive(true);
             _currentState = BattleState.Waiting;
@@ -327,7 +347,7 @@ public class BattleManagerScript : MonoBehaviour
 
     public void RetryBattle()
     {
-        Debug.Log("Retry Battle");
+        // Debug.Log("Retry Battle");
         StartCoroutine(RetryFade());
     }
 
@@ -350,7 +370,13 @@ public class BattleManagerScript : MonoBehaviour
         script._battleManager = this;
         script._optionsManager = _optionsManager;
         var graphicScript = (BattleActorGraphicScript)script.battleActorGraphics.GetComponent(typeof(BattleActorGraphicScript));
-        graphicScript.SetGraphics(_allSprites[0], _allAnimators[0]);
+        if (_actorGraphicsDictionary.Keys.Contains(actor.stats.name))
+        {
+            int actorGraphicsIndex = _actorGraphicsDictionary[actor.stats.name];
+            graphicScript.SetGraphics(_allSprites[actorGraphicsIndex], _allAnimators[actorGraphicsIndex]);
+        }
+        else
+            graphicScript.SetGraphics(_allSprites[0], _allAnimators[0]);
         graphicScript.isFlipped = isFlipped;
         return obj;
     }
@@ -745,7 +771,7 @@ public class BattleManagerScript : MonoBehaviour
 
     private void StartBattle()
     {
-        Debug.Log("BATTLE START");
+        // Debug.Log("BATTLE START");
         StartCoroutine(TransitionIn());
         _currentState = BattleState.WaitingStart;
     }
@@ -754,6 +780,7 @@ public class BattleManagerScript : MonoBehaviour
     {
         ResetPlayerActionState();
         DeselectPlayerSelection();
+        /*
         if (_playerActorObjects.Count == 0)
         {
             Debug.Log("YOU LOSE");
@@ -762,6 +789,7 @@ public class BattleManagerScript : MonoBehaviour
         {
             Debug.Log("VICTORY");
         }
+        */
         _currentState = BattleState.Waiting;
         StartCoroutine(TransitionOut());
     }

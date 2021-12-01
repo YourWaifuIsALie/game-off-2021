@@ -45,7 +45,6 @@ public class MusicManagerScript : MonoBehaviour
         }
         else
         {
-            Debug.Log("PLAY BUG");
             _currentMusic.Stop();
             _buggedMusic.Play();
         }

@@ -90,7 +90,7 @@ public class BattleActorFactory
                 // Debug.Log("Make BasicActor");
                 return new BasicActor(actor);
             default:
-                Debug.Log("Unexpected BattleAction type");
+                Debug.Log("Unexpected BattleActor type");
                 return null;
         }
     }

@@ -91,7 +91,7 @@ public class OptionsManagerScript : MonoBehaviour
         }
 
         // I should do further error checking for bad values after setup but whatever
-        SetWindowMode();
+        // SetWindowMode();
         SetOptionsMenu();
         SetResolution();
     }
@@ -195,7 +195,22 @@ public class OptionsManagerScript : MonoBehaviour
         try
         {
             string[] resolution = _optionsDictionary["resolution"].Split('x');
-            Screen.SetResolution(int.Parse(resolution[0]), int.Parse(resolution[1]), Screen.fullScreenMode);
+            // Screen.SetResolution(int.Parse(resolution[0]), int.Parse(resolution[1]), Screen.fullScreenMode);
+            // Last minute bug fix
+            switch (_optionsDictionary["windowMode"])
+            {
+                case "Fullscreen":
+                    Screen.SetResolution(int.Parse(resolution[0]), int.Parse(resolution[1]), FullScreenMode.ExclusiveFullScreen);
+                    break;
+                case "Window":
+                    Screen.SetResolution(int.Parse(resolution[0]), int.Parse(resolution[1]), FullScreenMode.Windowed);
+                    break;
+                case "Window Borderless":
+                    Screen.SetResolution(int.Parse(resolution[0]), int.Parse(resolution[1]), FullScreenMode.FullScreenWindow);
+                    break;
+                default:
+                    break;
+            }
         }
         catch (Exception exc)
         {

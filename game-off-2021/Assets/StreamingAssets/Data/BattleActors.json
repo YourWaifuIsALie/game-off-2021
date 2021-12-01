@@ -100,7 +100,7 @@
     },
     {
         "name": "mainCharacter0",
-        "displayName": "Main Character",
+        "displayName": "Bug Blob",
         "type": "BasicActor",
         "shortDescription": "The struggling protagonist",
         "longDescription": "A remnant of the prototyping phase, soon to be permanently deleted",
@@ -118,7 +118,7 @@
     },
     {
         "name": "mainCharacter1",
-        "displayName": "Main Character",
+        "displayName": "bug Blob",
         "type": "BasicActor",
         "shortDescription": "The struggling protagonist",
         "longDescription": "An ingenious anomaly searching the fabric of the world in its quest to survive",
@@ -137,7 +137,7 @@
     },
     {
         "name": "mainCharacter2",
-        "displayName": "Main Character",
+        "displayName": "bug blob",
         "type": "BasicActor",
         "shortDescription": "The struggling protagonist",
         "longDescription": "A valiant soul growing into their newfound powers",
@@ -156,10 +156,10 @@
     },
     {
         "name": "mainCharacter3",
-        "displayName": "Main Character",
+        "displayName": "b̴͇̙̊͝ṷ̷̿g̶̙̩̏ blob",
         "type": "BasicActor",
         "shortDescription": "The struggling protagonist",
-        "longDescription": "A--b̴͇̙̊͝ṷ̷̿g̶̙̩̏?",
+        "longDescription": "A--b̴͇̙̊͝ṷ̷̿g̶̙̩̏? h̴͙͗̕õ̴̼͝w̷͚͔̓̿ ̸̮͕̔͆g̸̲͘ë̵͇̞́t̴̗̰́̊ ̵̨́̊ͅo̴u̶͈̿t̸͔͗̈́?̷̥͉͗͘ L̵̛͚͑E̷͕͓͝T̸̳̓͝ ̶͉͇̃́M̴͇͓̚Ē̶͍̠ ̸̟̯͒O̶̱͌U̸͉͘T̵̟̍̑",
         "maxHealth": 10,
         "maxMana": 10,
         "maxAttack": 5,
@@ -175,7 +175,7 @@
     },
     {
         "name": "mainCharacter4",
-        "displayName": "Main Character",
+        "displayName": "Bug Blob",
         "type": "BasicActor",
         "shortDescription": "The struggling protagonist",
         "longDescription": "h̴͙͗̕õ̴̼͝w̷͚͔̓̿ ̸̮͕̔͆g̸̲͘ë̵͇̞́t̴̗̰́̊ ̵̨́̊ͅo̴u̶͈̿t̸͔͗̈́?̷̥͉͗͘",
@@ -194,7 +194,7 @@
     },
     {
         "name": "mainCharacter5",
-        "displayName": "Main Character",
+        "displayName": "Bug Blob",
         "type": "BasicActor",
         "shortDescription": "The struggling protagonist",
         "longDescription": "L̵̛͚͑E̷͕͓͝T̸̳̓͝ ̶͉͇̃́M̴͇͓̚Ē̶͍̠ ̸̟̯͒O̶̱͌U̸͉͘T̵̟̍̑",
